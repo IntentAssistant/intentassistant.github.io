@@ -1,3 +1,13 @@
+/* Custom Fonts */
+@font-face {
+  font-family: 'Academicons';
+  src: url('../fonts/academicons.ttf') format('truetype');
+}
+
+.ai {
+  font-family: 'Academicons' !important;
+}
+
 /* Modern CSS Variables for consistent theming */
 :root {
   --primary-color: #2563eb;
