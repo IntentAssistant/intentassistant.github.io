@@ -2897,6 +2897,10 @@ section[id] {
     min-width: 1.35em;
   }
 
+  .intentionbench-dataset-layout {
+    grid-template-columns: 1fr;
+  }
+
   .system-flow-scroll {
     width: auto;
     margin-right: -20px;
@@ -5034,6 +5038,52 @@ section[id] {
 
 .content-placeholder p:last-child {
   margin: 0;
+}
+
+.intentionbench-dataset-panel {
+  margin-top: clamp(24px, 4vw, 48px);
+}
+
+.intentionbench-dataset-layout {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.34fr) minmax(0, 0.66fr);
+  gap: clamp(20px, 3vw, 36px);
+  align-items: center;
+}
+
+.intentionbench-dataset-layout p {
+  margin: 0;
+  color: var(--muted-ink);
+  font-size: clamp(16px, 1.55vw, 21px);
+  line-height: 1.45;
+}
+
+.detail-inline-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 92px;
+  min-height: 42px;
+  padding: 0 16px;
+  border: 1px solid #111111;
+  border-radius: 999px;
+  color: #ffffff;
+  background: #111111;
+  font-size: 15px;
+  font-weight: 850;
+  line-height: 1;
+  text-decoration: none;
+}
+
+.detail-inline-link:hover,
+.detail-inline-link:focus-visible {
+  color: #ffffff;
+  background: #000000;
+}
+
+.detail-inline-link:focus-visible {
+  outline: 2px solid #111111;
+  outline-offset: 3px;
 }
 
 .dataset-section .split {

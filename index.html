@@ -48,9 +48,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
-    <link rel="stylesheet" href="static/css/index.css?v=system-step-nav-2">
+    <link rel="stylesheet" href="static/css/index.css?v=evaluation-layout-1">
     <script defer src="static/js/fontawesome.all.min.js"></script>
-    <script defer src="static/js/index.js?v=system-step-nav-2"></script>
+    <script defer src="static/js/index.js?v=evaluation-layout-1"></script>
   </head>
   <body class="classic-project-page">
     <main id="top">
@@ -512,6 +512,29 @@
             </p>
           </article>
 
+          <article class="chart-panel intentionbench-dataset-panel" data-animate>
+            <div class="chart-header">
+              <div>
+                <span>Evaluation Benchmark</span>
+                <h3>IntentionBench tests whether behavior matches the user's stated intention.</h3>
+              </div>
+              <a class="detail-inline-link" href="https://huggingface.co/datasets/juheonch/intention_bench" target="_blank" rel="noopener">
+                Dataset
+              </a>
+            </div>
+            <div class="intentionbench-dataset-layout">
+              <div>
+                <p>
+                  IntentionBench includes focused sessions and mixed sessions where users drift
+                  across on-task and off-task activities under the same high-level intention.
+                </p>
+              </div>
+              <figure class="dataset-figure-frame">
+                <img src="static/images/4_intentionbench.png" alt="IntentionBench session examples.">
+              </figure>
+            </div>
+          </article>
+
           <div class="detail-source" id="detail-detection" hidden>
             <p>
               Table 1 evaluates Gemini 2.0-Flash on IntentionBench. No interaction reached 0.805 accuracy and 0.739 F1. Clarification raised performance to 0.871 accuracy and 0.836 F1; feedback alone reached 0.845 accuracy and 0.794 F1.
@@ -527,6 +550,10 @@
         <div class="section-inner">
           <div class="section-heading wide">
             <h2 class="motivation-title result-title">User Study Design</h2>
+          </div>
+          <div class="content-placeholder">
+            <h3>Work in progress</h3>
+            <p>This section is being updated.</p>
           </div>
         </div>
       </section>
@@ -785,28 +812,10 @@
           <div class="section-heading wide">
             <h2 class="motivation-title result-title">Discussion</h2>
           </div>
-        </div>
-      </section>
-
-      <section class="section dataset-section" id="dataset">
-        <div class="section-inner split">
-          <div class="section-heading">
-            <h2>IntentionBench</h2>
-            <p class="section-lede">
-              A benchmark for detecting whether digital behavior matches a stated intention.
-            </p>
-            <p>
-              The benchmark includes focused sessions and mixed sessions where users drift
-              across on-task and off-task activities under the same high-level intention.
-            </p>
-            <a class="button inline-button" href="https://huggingface.co/datasets/juheonch/intention_bench" target="_blank" rel="noopener">
-              <span class="link-icon image-icon" aria-hidden="true"><img src="static/images/huggingface-logo.svg" alt=""></span>
-              <span>Open Dataset</span>
-            </a>
+          <div class="content-placeholder">
+            <h3>Work in progress</h3>
+            <p>This section is being updated.</p>
           </div>
-          <figure class="dataset-figure-frame">
-            <img src="static/images/4_intentionbench.png" alt="IntentionBench session examples.">
-          </figure>
         </div>
       </section>
 
