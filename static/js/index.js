@@ -502,7 +502,6 @@ systemOverviews.forEach((overview) => {
     currentActiveStep = activeStep;
     overview.setAttribute("data-active-step", activeStep);
     overview.classList.toggle("is-overall", isOverall);
-    overview.classList.toggle("has-step-nav", !isOverall);
 
     if (overallButton) {
       overallButton.classList.toggle("is-active", isOverall);
@@ -515,7 +514,7 @@ systemOverviews.forEach((overview) => {
 
     if (nextButton) {
       nextButton.disabled =
-        isOverall || stepIndex === -1 || stepIndex >= systemOverviewStepOrder.length - 1;
+        stepIndex === -1 || stepIndex >= systemOverviewStepOrder.length - 1;
     }
 
     buttons.forEach((button) => {

@@ -1548,15 +1548,6 @@ section[id] {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  opacity: 0;
-  pointer-events: none;
-  transform: translateY(4px);
-  transition:
-    opacity 180ms ease,
-    transform 180ms ease;
-}
-
-.system-overview-svg-frame.has-step-nav .system-overview-nav-buttons {
   opacity: 1;
   pointer-events: auto;
   transform: translateY(0);
@@ -1580,6 +1571,21 @@ section[id] {
 .system-overview-nav-button:focus-visible:not(:disabled) {
   color: #ffffff;
   background: #111111;
+}
+
+.system-overview-nav-button[data-system-overview-next] {
+  color: #ffffff;
+  background: #111111;
+}
+
+.system-overview-nav-button[data-system-overview-next]:hover:not(:disabled),
+.system-overview-nav-button[data-system-overview-next]:focus-visible:not(:disabled) {
+  color: #ffffff;
+  background: #111111;
+}
+
+.system-overview-svg-frame.is-overall .system-overview-nav-button[data-system-overview-prev] {
+  display: none;
 }
 
 .system-overview-nav-button:disabled {
@@ -2881,9 +2887,60 @@ section[id] {
     padding: 0 11px;
   }
 
+  .system-overview-control-hint {
+    flex: 1 1 100%;
+    font-size: 13px;
+  }
+
+  .system-step1-person-area p {
+    font-size: clamp(13px, 5.5vw, 22px);
+  }
+
+  .system-step1-person-area img {
+    width: 66%;
+    max-height: 66%;
+  }
+
+  .system-step1-floating-words {
+    top: 19%;
+    font-size: clamp(9px, 3.4vw, 14px);
+  }
+
+  .system-step1-agent-area img {
+    width: 19%;
+  }
+
+  .system-step23-video-frame {
+    width: 64%;
+  }
+
+  .system-step23-result-area {
+    padding-right: 1%;
+  }
+
+  .system-step23-arrow {
+    left: -19%;
+    width: 15%;
+    border-top-width: 1px;
+  }
+
+  .system-step23-arrow::after {
+    right: -5px;
+    border-top-width: 4px;
+    border-bottom-width: 4px;
+    border-left-width: 6px;
+  }
+
+  .system-step23-intention-box {
+    padding: 0.36em 0.48em 0.4em;
+    border-radius: 0.22em;
+    font-size: clamp(8px, 2.95vw, 13px);
+  }
+
   .system-overview-caption {
     display: grid;
     gap: 4px;
+    overflow: hidden;
   }
 
   .system-overview-caption strong {
@@ -2895,6 +2952,10 @@ section[id] {
     width: 1.35em;
     height: 1.35em;
     min-width: 1.35em;
+  }
+
+  .system-overview-caption > span {
+    overflow-wrap: anywhere;
   }
 
   .intentionbench-dataset-layout {
