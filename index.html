@@ -1,387 +1,884 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  
-  <!-- Primary Meta Tags -->
-  <meta name="title" content="State Your Intention to Steer Your Attention: An AI Assistant for Intentional Digital Living - Juheon Choi, Juyong Lee, Jian Kim, ChanYoung Kim, Taywon Min, W. Bradley Knox, Min Kyung Lee, Kimin Lee">
-  <!-- TODO: Write a compelling 150-160 character description of your research -->
-  <meta name="description" content="When working on digital devices, people often face distractions that can lead to a decline in productivity and efficiency, as well as negative psychological and emotional impacts. To address this challenge, we introduce a novel AI assistant that elicits a user's intention, assesses whether ongoing activities are in line with that intention, and provides gentle nudges when deviations occur. The system leverages a large language model to analyze screenshots, application titles, and URLs, issuing notifications when behavior diverges from the stated goal. Its detection accuracy is refined through initial clarification dialogues and continuous user feedback. In a three-week, within-subjects field deployment with 22 participants, we compared our assistant to both a rule-based intent reminder system and a passive baseline that only logged activity. Results indicate that our AI assistant effectively supports users in maintaining focus and aligning their digital behavior with their intentions.">
-  <!-- TODO: Add 5-10 relevant keywords for your research area -->
-  <meta name="keywords" content="HCI, Proactive AI,AI Assistant, Intentional Digital Living">
-  <!-- TODO: List all authors -->
-  <meta name="author" content="Juheon Choi, Juyong Lee, Jian Kim, ChanYoung Kim, Taywon Min, W. Bradley Knox, Min Kyung Lee, Kimin Lee">
-  <meta name="robots" content="index, follow">
-  <meta name="language" content="English">
-  
-  <!-- Open Graph / Facebook -->
-  <meta property="og:type" content="article">
-  <!-- TODO: Replace with your institution or lab name -->
-  <meta property="og:site_name" content="Intent Assistant">
-  <!-- TODO: Same as paper title above -->
-  <meta property="og:title" content="State Your Intention to Steer Your Attention: An AI Assistant for Intentional Digital Living">
-  <!-- TODO: Same as description above -->
-  <meta property="og:description" content="When working on digital devices, people often face distractions that can lead to a decline in productivity and efficiency, as well as negative psychological and emotional impacts. To address this challenge, we introduce a novel AI assistant that elicits a user's intention, assesses whether ongoing activities are in line with that intention, and provides gentle nudges when deviations occur. The system leverages a large language model to analyze screenshots, application titles, and URLs, issuing notifications when behavior diverges from the stated goal. Its detection accuracy is refined through initial clarification dialogues and continuous user feedback. In a three-week, within-subjects field deployment with 22 participants, we compared our assistant to both a rule-based intent reminder system and a passive baseline that only logged activity. Results indicate that our AI assistant effectively supports users in maintaining focus and aligning their digital behavior with their intentions.">
-  <!-- TODO: Replace with your actual website URL -->
-  <meta property="og:url" content="https://intentassistant.github.io/">
-  <!-- TODO: Create a 1200x630px preview image and update path -->
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <meta property="og:image" content="https://intentassistant.github.io/static/images/1_INA.png">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="State Your Intention to Steer Your Attention: An AI Assistant for Intentional Digital Living - Research Preview">
-  <meta property="article:published_time" content="2025-09-19T00:00:00.000Z">
-  <meta property="article:author" content="Juheon Choi, Juyong Lee, Jian Kim, ChanYoung Kim, Taywon Min, W. Bradley Knox, Min Kyung Lee, Kimin Lee">
-  <meta property="article:section" content="Research">
-  <meta property="article:tag" content="AI Assistant">
-  <meta property="article:tag" content="Intentional Digital Living">
+    <title>State Your Intention to Steer Your Attention: An AI Assistant for Intentional Digital Living</title>
+    <meta
+      name="description"
+      content="INA is an AI assistant for intentional digital living that elicits user intentions, monitors digital activity, and gives lightweight nudges when attention drifts."
+    >
+    <meta name="keywords" content="HCI, proactive AI, AI assistant, intention, attention, digital wellbeing">
+    <meta name="author" content="Juheon Choi, Juyong Lee, Jian Kim, ChanYoung Kim, Taywon Min, W. Bradley Knox, Min Kyung Lee, Kimin Lee">
+    <meta name="robots" content="index, follow">
 
-  <!-- Twitter -->
-  <meta name="twitter:card" content="https://intentassistant.github.io/static/images/1_INA.png">
-  <!-- TODO: Replace with your lab/institution Twitter handle -->
-  <meta name="twitter:site" content="@_JuheonChoi_">
-  <!-- TODO: Replace with first author's Twitter handle -->
-  <meta name="twitter:creator" content="@_JuheonChoi_">
-  <!-- TODO: Same as paper title above -->
-  <meta name="twitter:title" content="State Your Intention to Steer Your Attention: An AI Assistant for Intentional Digital Living">
-  <!-- TODO: Same as description above -->
-  <meta name="twitter:description" content="When working on digital devices, people often face distractions that can lead to a decline in productivity and efficiency, as well as negative psychological and emotional impacts. To address this challenge, we introduce a novel AI assistant that elicits a user's intention, assesses whether ongoing activities are in line with that intention, and provides gentle nudges when deviations occur. The system leverages a large language model to analyze screenshots, application titles, and URLs, issuing notifications when behavior diverges from the stated goal. Its detection accuracy is refined through initial clarification dialogues and continuous user feedback. In a three-week, within-subjects field deployment with 22 participants, we compared our assistant to both a rule-based intent reminder system and a passive baseline that only logged activity. Results indicate that our AI assistant effectively supports users in maintaining focus and aligning their digital behavior with their intentions.">
-  <!-- TODO: Same as social preview image above -->
-  <meta name="twitter:image" content="https://intentassistant.github.io/static/images/1_INA.png">
-  <meta name="twitter:image:alt" content="State Your Intention to Steer Your Attention: An AI Assistant for Intentional Digital Living - Research Preview">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="INA">
+    <meta property="og:title" content="State Your Intention to Steer Your Attention: An AI Assistant for Intentional Digital Living">
+    <meta
+      property="og:description"
+      content="INA is an AI assistant for intentional digital living that helps users keep digital activity aligned with their stated intentions."
+    >
+    <meta property="og:url" content="https://intentassistant.github.io/">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="State Your Intention to Steer Your Attention: An AI Assistant for Intentional Digital Living">
+    <meta
+      name="twitter:description"
+      content="INA is an AI assistant for intentional digital living that helps users keep digital activity aligned with their stated intentions."
+    >
 
-  <!-- Academic/Research Specific -->
-  <meta name="citation_title" content="State Your Intention to Steer Your Attention: An AI Assistant for Intentional Digital Living">
-  <meta name="citation_author" content="Juheon Choi, Juyong Lee, Jian Kim, ChanYoung Kim, Taywon Min, W. Bradley Knox, Min Kyung Lee, Kimin Lee">
-  <meta name="citation_publication_date" content="2026">
-  <meta name="citation_pdf_url" content="https://arxiv.org/pdf/2510.14513">
-  
-  <!-- Additional SEO -->
-  <meta name="theme-color" content="#2563eb">
-  <meta name="msapplication-TileColor" content="#2563eb">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  
-  <!-- Preconnect for performance -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preconnect" href="https://ajax.googleapis.com">
-  <link rel="preconnect" href="https://documentcloud.adobe.com">
-  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <meta name="citation_title" content="State Your Intention to Steer Your Attention: An AI Assistant for Intentional Digital Living">
+    <meta name="citation_author" content="Juheon Choi">
+    <meta name="citation_author" content="Juyong Lee">
+    <meta name="citation_author" content="Jian Kim">
+    <meta name="citation_author" content="ChanYoung Kim">
+    <meta name="citation_author" content="Taywon Min">
+    <meta name="citation_author" content="W. Bradley Knox">
+    <meta name="citation_author" content="Min Kyung Lee">
+    <meta name="citation_author" content="Kimin Lee">
+    <meta name="citation_publication_date" content="2026">
+    <meta name="citation_pdf_url" content="https://arxiv.org/pdf/2510.14513">
 
-
-  <!-- TODO: Replace with your paper title and authors -->
-  <title>State Your Intention to Steer Your Attention: An AI Assistant for
-    Intentional Digital Living - AUTHOR_NAMES | Academic Research</title>
-  
-  <!-- Favicon and App Icons -->
-  <link rel="icon" type="image/x-icon" href="static/images/favicon.ico">
-  <link rel="apple-touch-icon" href="static/images/favicon.ico">
-  
-  <!-- Critical CSS - Load synchronously -->
-  <link rel="stylesheet" href="static/css/bulma.min.css">
-  <link rel="stylesheet" href="static/css/index.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
-  
-  <!-- Non-critical CSS - Load asynchronously -->
-  <link rel="preload" href="static/css/bulma-carousel.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  <link rel="preload" href="static/css/bulma-slider.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  <link rel="preload" href="static/css/fontawesome.all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  <link rel="preload" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  
-  <!-- Fallback for browsers that don't support preload -->
-  <noscript>
-    <link rel="stylesheet" href="static/css/bulma-carousel.min.css">
-    <link rel="stylesheet" href="static/css/bulma-slider.min.css">
-    <link rel="stylesheet" href="static/css/fontawesome.all.min.css">
+    <meta name="theme-color" content="#202124">
+    <link rel="icon" type="image/x-icon" href="static/images/favicon.ico">
+    <link rel="apple-touch-icon" href="static/images/favicon.ico">
+    <link rel="preload" as="video" href="static/videos/banner_video.mp4" type="video/mp4">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
-  </noscript>
-  
-  <!-- Fonts - Optimized loading -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  
-  <!-- Defer non-critical JavaScript -->
-  <script defer src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script defer src="https://documentcloud.adobe.com/view-sdk/main.js"></script>
-  <script defer src="static/js/fontawesome.all.min.js"></script>
-  <script defer src="static/js/bulma-carousel.min.js"></script>
-  <script defer src="static/js/bulma-slider.min.js"></script>
-  <script defer src="static/js/index.js"></script>
-  
+    <link rel="stylesheet" href="static/css/index.css?v=system-step-nav-2">
+    <script defer src="static/js/fontawesome.all.min.js"></script>
+    <script defer src="static/js/index.js?v=system-step-nav-2"></script>
+  </head>
+  <body class="classic-project-page">
+    <main id="top">
+      <section class="hero" aria-label="Intro video">
+        <div class="hero-bg" aria-hidden="true">
+          <video muted playsinline preload="metadata">
+            <source src="static/videos/banner_video.mp4" type="video/mp4">
+          </video>
+        </div>
+        <a class="scroll-cue" href="#overview" aria-label="Scroll to project details">
+          <span>Scroll to explore</span>
+          <i aria-hidden="true"></i>
+        </a>
+      </section>
 
-  
-  <!-- Website/Organization Structured Data -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "INSTITUTION_OR_LAB_NAME",
-    "url": "https://YOUR_INSTITUTION_WEBSITE.com",
-    "logo": "https://YOUR_DOMAIN.com/static/images/favicon.ico",
-    "sameAs": [
-      "https://twitter.com/YOUR_TWITTER_HANDLE",
-      "https://github.com/YOUR_GITHUB_USERNAME"
-    ]
-  }
-  </script>
-</head>
-<body>
+      <section class="summary-band" id="overview" aria-label="Project summary">
+        <div class="section-inner paper-title-block">
+          <h1>State Your Intention to Steer Your Attention: An AI Assistant for Intentional Digital Living</h1>
+          <p class="paper-authors">
+            <a href="https://juheonchoi.com" target="_blank" rel="noopener">Juheon Choi</a><sup>1</sup>,
+            <a href="https://jylee425.github.io/" target="_blank" rel="noopener">Juyong Lee</a><sup>1</sup>,
+            <a href="https://jiankimr.github.io/" target="_blank" rel="noopener">Jian Kim</a><sup>2</sup>,
+            <a href="https://slowturtle99.github.io/" target="_blank" rel="noopener">ChanYoung Kim</a><sup>1</sup>,
+            <a href="https://mintaywon.github.io/" target="_blank" rel="noopener">Taywon Min</a><sup>1</sup>,
+            <a href="https://bradknox.net/" target="_blank" rel="noopener">W. Bradley Knox</a><sup>*3</sup>,
+            <a href="https://minlee.net/" target="_blank" rel="noopener">Min Kyung Lee</a><sup>*3</sup>,
+            <a href="https://sites.google.com/view/kiminlee" target="_blank" rel="noopener">Kimin Lee</a><sup>*1</sup>
+          </p>
+          <p class="paper-contribution-note">* Equal advising</p>
+          <p class="paper-affiliations">
+            <span><sup>1</sup> KAIST</span>
+            <span><sup>2</sup> Yonsei University</span>
+            <span><sup>3</sup> University of Texas at Austin</span>
+          </p>
+          <figure class="paper-demo-video" aria-label="INA demo video">
+            <video autoplay muted loop playsinline controls>
+              <source src="static/videos/banner_video.mp4" type="video/mp4">
+            </video>
+          </figure>
+          <nav class="paper-links" aria-label="Project resources">
+            <a href="https://arxiv.org/abs/2510.14513" target="_blank" rel="noopener">
+              <span class="link-icon" aria-hidden="true"><i class="ai ai-arxiv"></i></span>
+              <span>Paper</span>
+            </a>
+            <a href="https://github.com/IntentAssistant/INA/tree/main" target="_blank" rel="noopener">
+              <span class="link-icon" aria-hidden="true"><i class="fab fa-github"></i></span>
+              <span>Code</span>
+            </a>
+            <a href="https://huggingface.co/datasets/juheonch/intention_bench" target="_blank" rel="noopener">
+              <span class="link-icon image-icon" aria-hidden="true"><img src="static/images/huggingface-logo.svg" alt=""></span>
+              <span>Dataset</span>
+            </a>
+            <a href="https://github.com/IntentAssistant/INA/releases/download/v1.0.0/IntentAssistant-v1.0.0.dmg" target="_blank" rel="noopener">
+              <span class="link-icon image-icon" aria-hidden="true"><img src="static/images/INA.png" alt=""></span>
+              <span>App</span>
+            </a>
+            <a href="https://iing.notion.site/INA-Intent-Assistant-Application-Guide-29b5c593a80880479e92cd106deb868f" target="_blank" rel="noopener">
+              <span class="link-icon" aria-hidden="true"><i class="fas fa-question-circle"></i></span>
+              <span>Guide</span>
+            </a>
+          </nav>
+        </div>
 
-
-  <!-- Scroll to Top Button -->
-  <button class="scroll-to-top" onclick="scrollToTop()" title="Scroll to top" aria-label="Scroll to top">
-    <i class="fas fa-chevron-up"></i>
-  </button>
-
-
-  <main id="main-content">
-  <section class="hero">
-    <div class="hero-body">
-      <div class="container is-max-desktop">
-        <div class="columns is-centered">
-          <div class="column has-text-centered">
-            <!-- TODO: Replace with your paper title -->
-            <h1 class="title is-1 publication-title">State Your Intention to Steer Your Attention: An AI Assistant for Intentional Digital Living</h1>
-            <div class="is-size-5 publication-authors">
-              <!-- Paper authors and their personal links -->
-              <span class="author-block">
-                <a href="https://juheonchoi.com" target="_blank">Juheon Choi</a><sup>1</sup>,</span>
-                <span class="author-block">
-                  <a href="https://jylee425.github.io/" target="_blank">Juyong Lee</a><sup>1</sup>,</span>
-                  <span class="author-block">
-                    <a href="https://jiankimr.github.io/" target="_blank">Jian Kim</a><sup>2</sup>,</span>
-                  <span class="author-block">
-                    <a href="https://slowturtle99.github.io/" target="_blank">ChanYoung Kim</a><sup>1</sup>,</span>
-                  <span class="author-block">
-                    <a href="https://mintaywon.github.io/" target="_blank">Taywon Min</a><sup>1</sup>,</span><br>
-                  <span class="author-block">
-                    <a href="https://bradknox.net/" target="_blank">W. Bradley Knox</a><sup>*,3</sup>,</span>
-                  <span class="author-block">
-                    <a href="https://minlee.net/" target="_blank">Min Kyung Lee</a><sup>*,3</sup>,</span>
-                  <span class="author-block">
-                    <a href="https://sites.google.com/view/kiminlee" target="_blank">Kimin Lee</a><sup>*,1</sup>
-                  </span>
-                  </div>
-
-                  <div class="is-size-5 publication-authors">
-
-                    <span class="author-block"><sup>1</sup>KAIST, <sup>2</sup>Yonsei University, <sup>3</sup>University of Texas at Austin</span>
-
-                    <span class="eql-cntrb"><small><br><sup>*</sup>Equal advising</small></span>
-                  </div>
-
-                  <div class="column has-text-centered">
-                    <div class="publication-links">
-                         <!-- TODO: Update with your arXiv paper ID -->
-                      <!-- <span class="link-block">
-                        <a href="https://arxiv.org/pdf/<ARXIV PAPER ID>.pdf" target="_blank"
-                        class="external-link button is-normal is-rounded is-dark">
-                        <span class="icon">
-                          <i class="fas fa-file-pdf"></i>
-                        </span>
-                        <span>Paper</span>
-                      </a>
-                    </span> -->
-
-                    <!-- TODO: Add your supplementary material PDF or remove this section -->
-                    <!-- <span class="link-block">
-                      <a href="static/pdfs/supplementary_material.pdf" target="_blank"
-                      class="external-link button is-normal is-rounded is-dark">
-                      <span class="icon">
-                        <i class="fas fa-file-pdf"></i>
-                      </span>
-                      <span>Supplementary</span>
-                    </a>
-                  </span> -->
-                <!-- TODO: Update with your arXiv paper ID -->
-                <span class="link-block">
-                  <!-- <a href="https://arxiv.org/abs/<ARXIV PAPER ID>" target="_blank"
-                  class="external-link button is-normal is-rounded is-dark"> -->
-                  <a href="https://arxiv.org/abs/2510.14513" target="_blank"
-                    class="external-link button is-normal is-rounded is-dark">
-                  <span class="icon">
-                    <i class="ai ai-arxiv"></i>
-                  </span>
-                  <span>Paper</span>
-                
-                  <!-- TODO: Replace with your GitHub repository URL -->
-                  <span class="link-block">
-                    <a href="https://github.com/IntentAssistant/INA/tree/main" target="_blank"
-                    class="external-link button is-normal is-rounded is-dark">
-                    <span class="icon">
-                      <i class="fab fa-github"></i>
+        <div class="section-inner slide-story">
+          <section class="motivation-scroll" data-motivation-scroll aria-label="Motivation sequence">
+            <div class="motivation-scroll-sticky">
+              <h2 class="motivation-title">Motivations</h2>
+              <div class="motivation-copy-stage">
+                <p class="motivation-lede">
+                  We want to live according to our <strong>Intentions</strong>,
+                  <span class="motivation-addition" data-motivation-addition>
+                    but <strong>too many distractions</strong>
+                    <span class="distraction-icons" aria-label="Instagram, TikTok, and YouTube">
+                      <i class="fab fa-instagram social-instagram" aria-hidden="true"></i>
+                      <i class="fab fa-tiktok social-tiktok" aria-hidden="true"></i>
+                      <i class="fab fa-youtube social-youtube" aria-hidden="true"></i>
                     </span>
-                    <span>Code</span>
-                  </a>
-                </span>
+                    pull our attention away.
+                  </span>
+                </p>
+              </div>
+              <figure class="motivation-image-stage">
+                <img
+                  class="is-active"
+                  data-motivation-image
+                  src="static/images/motivation1.png"
+                  alt="Illustration of intentional living."
+                >
+                <img
+                  data-motivation-image
+                  src="static/images/motivation2.png"
+                  alt="Illustration of social media distractions pulling attention away."
+                >
+              </figure>
+            </div>
+          </section>
 
-                <!-- <span class="link-block">
-                  <a href="https://github.com/IntentAssistant/intention-bench" target="_blank"
-                  class="external-link button is-normal is-rounded is-dark">
-                  <span class="icon">
-                    <i class="fab fa-github"></i>
+          <section class="related-scroll" data-related-scroll aria-label="Prior approaches">
+            <div class="related-scroll-sticky">
+              <div class="related-scroll-copy">
+                <h2 class="related-title">Prior Approaches</h2>
+                <h3 class="related-focus-sentence">
+                  Existing tools usually focus on
+                  <span class="related-term-stage">
+                    <span class="related-term" data-related-step>app usage</span>
+                    <span class="related-term-prefix" data-related-prefix>, </span>
+                    <span class="related-term" data-related-step>time limits</span>
+                    <span class="related-term-prefix" data-related-prefix>, or </span>
+                    <span class="related-term related-term-with-citation" data-related-step>
+                      <span>reflection prompts</span>
+                      <a
+                        class="related-cite-link"
+                        href="https://faculty.washington.edu/jkientz/papers/Hiniker-MyTime-CHI2016.pdf"
+                        target="_blank"
+                        rel="noopener"
+                        aria-label="Hiniker et al., CHI 2016 PDF"
+                      >
+                        [Hiniker et al., CHI '16]
+                      </a>
+                    </span>
                   </span>
-                  <span>IntentionBench</span>
-                </a> -->
-                <span class="link-block">
-                  <a href="https://huggingface.co/datasets/juheonch/intention_bench" target="_blank"
-                  class="external-link button is-normal is-rounded is-dark">
-                  <span class="icon">
-                    <img src="static/images/huggingface-logo.svg" alt="Hugging Face" style="width: 1em; height: 1em; vertical-align: -0.125em;">
-                  </span>
-                  <span>IntentionBench</span>
-                </a>
+                </h3>
+              </div>
+              <figure class="related-phone-stage">
+                <div class="related-phone-crop">
+                  <img
+                    data-related-image
+                    src="static/images/relatedwork1-crop5pt.png"
+                    alt="Screen Time usage analytics on an iPhone."
+                  >
+                  <img
+                    data-related-image
+                    src="static/images/relatedwork2-crop5pt.png"
+                    alt="A time limit screen blocking an app."
+                  >
+                  <img
+                    data-related-image
+                    src="static/images/relatedwork3-crop5pt.png"
+                    alt="A reflection prompt asking what the user wants to accomplish today."
+                  >
+                </div>
+              </figure>
+            </div>
+          </section>
+
+          <section class="problem-section" data-problem-scroll aria-label="Problem">
+            <div class="problem-sticky">
+              <h2 class="problem-title">Problem</h2>
+              <p class="problem-kicker"><strong>Same app</strong>, completely <strong>different context</strong>.</p>
+              <p class="problem-subcopy">
+                Existing tools <strong>can't tell the difference</strong>.
+                <span data-problem-block-copy>Just block YouTube entirely.</span>
+              </p>
+              <div class="problem-video-grid">
+                <figure class="problem-video-panel problem-video-panel-good">
+                  <div class="problem-video-frame">
+                    <video autoplay muted loop playsinline preload="metadata">
+                      <source src="static/images/left_whatis_hci-first3.mp4" type="video/mp4">
+                    </video>
+                    <div class="problem-lock-overlay" aria-hidden="true">
+                      <i class="fas fa-lock"></i>
+                    </div>
+                  </div>
+                  <figcaption>watching HCI lecture</figcaption>
+                </figure>
+                <figure class="problem-video-panel problem-video-panel-bad">
+                  <div class="problem-video-frame">
+                    <video autoplay muted loop playsinline preload="metadata">
+                      <source src="static/images/right_cutes_shorts.mp4" type="video/mp4">
+                    </video>
+                    <div class="problem-lock-overlay" aria-hidden="true">
+                      <i class="fas fa-lock"></i>
+                    </div>
+                  </div>
+                  <figcaption>watching YouTube Shorts</figcaption>
+                </figure>
+                <div class="problem-study-overlay">
+                  <div class="problem-study-content">
+                    <h3><strong>Formative Study</strong> <span>- 11 users</span></h3>
+                    <p>F11 (Office worker)</p>
+                    <blockquote>
+                      I had to forcibly <strong>disable the blocking program</strong> for studying purposes,
+                      only to get distracted and <strong>waste more time</strong>
+                    </blockquote>
+                  </div>
+                </div>
+              </div>
+              <p class="problem-context-need">We need context-aware support</p>
+            </div>
+          </section>
+
+          <article class="story-row key-idea-row" data-key-idea-question>
+            <h2 class="key-idea-title">Key Idea</h2>
+            <p class="key-idea-question" aria-live="polite">
+              <span class="key-idea-line">
+                <span>What if</span>
+                <span class="key-idea-word-shell">
+                  <span class="key-idea-word" data-key-idea-subject>advisor</span>
+                </span>
+                <span>could</span>
               </span>
+              <span class="key-idea-line key-idea-line-secondary">see your screen?</span>
+            </p>
+            <figure class="key-idea-video-frame" aria-label="Key idea video demonstration">
+              <video autoplay muted loop playsinline preload="metadata">
+                <source src="static/images/idea-combined.mp4" type="video/mp4">
+              </video>
+            </figure>
+          </article>
 
-              <span class="link-block">
-                <a href="https://github.com/IntentAssistant/INA/releases/download/v1.0.0/IntentAssistant-v1.0.0.dmg" target="_blank"
-                class="external-link button is-normal is-rounded is-dark">
-                <span class="icon">
-                  <img src="static/images/INA.png" alt="Intent Assistant App" style="width: 1em; height: 1em; vertical-align: -0.125em; border-radius: 2px;">
-                </span>
-                <span>Intent Assistant</span>
-              </a>
-            </span>
+          <article class="ai-understanding-row" data-ai-understanding>
+            <p class="ai-understanding-title">
+              <span>AI now understands</span>
+              <span><strong>what you're doing</strong></span>
+            </p>
+            <div class="ai-understanding-stage">
+              <figure class="ai-understanding-panel ai-understanding-panel-left" data-ai-panel="left">
+                <div class="ai-understanding-video-frame">
+                  <video muted playsinline preload="metadata" data-ai-video="left">
+                    <source src="static/images/left_whatis_hci-first3.mp4" type="video/mp4">
+                  </video>
+                </div>
+                <figcaption>watching HCI lecture</figcaption>
+              </figure>
+              <figure class="ai-understanding-panel ai-understanding-panel-right" data-ai-panel="right">
+                <div class="ai-understanding-video-frame">
+                  <video muted playsinline preload="metadata" data-ai-video="right">
+                    <source src="static/images/right_cutes_shorts.mp4" type="video/mp4">
+                  </video>
+                </div>
+                <figcaption>watching YouTube Shorts</figcaption>
+              </figure>
+              <p class="ai-understanding-caption ai-understanding-caption-left" data-ai-caption="left">
+                <span class="ai-understanding-caption-line">The user is watching <strong>"What is HCI"</strong>,</span>
+                <span class="ai-understanding-caption-line">an <strong>academic lecture</strong></span>
+                <span class="ai-understanding-caption-line">video on YouTube.</span>
+              </p>
+              <img class="ai-understanding-agent" src="static/images/agent.png" alt="AI agent">
+              <p class="ai-understanding-caption ai-understanding-caption-right" data-ai-caption="right">
+                <span class="ai-understanding-caption-line">The user is browsing</span>
+                <span class="ai-understanding-caption-line"><strong>YouTube Shorts</strong>, viewing</span>
+                <span class="ai-understanding-caption-line"><strong>cute animal videos</strong>.</span>
+              </p>
+            </div>
+          </article>
 
-              <span class="link-block">
-                <a href="https://iing.notion.site/INA-Intent-Assistant-Application-Guide-29b5c593a80880479e92cd106deb868f" target="_blank"
-                class="external-link button is-normal is-rounded is-dark">
-                <span class="icon">
-                  <i class="fas fa-circle-question"></i>
-                </span>
-                <span>APP Guide</span>
-              </a>
-            </span>
+          <article class="assistant-bridge-row" data-reveal>
+            <p>
+              What if we built an assistant with this
+              <strong>context-aware understanding</strong>?
+            </p>
+          </article>
 
+          <div class="ina-intro-scroll">
+            <article class="ina-intro-row" data-reveal data-ina-demo>
+              <h2 class="ina-intro-title" aria-label="Intent Assistant">
+                <span class="ina-title-caps">IN</span><span class="ina-title-lower">tent</span>
+                <span class="ina-title-caps">A</span><span class="ina-title-lower">ssistant</span>
+              </h2>
+              <p class="ina-intro-copy">
+                An AI Assistant for Intentional Digital Living
+              </p>
+              <div class="ina-step-caption" aria-live="polite" data-ina-step-caption>
+                <span class="ina-step-number" data-ina-step-number>1</span>
+                <p data-ina-step-text>The user declares their intention.</p>
+              </div>
+              <figure class="ina-intro-video-frame" aria-label="INA application demo video">
+                <video muted loop playsinline preload="metadata" data-ina-demo-video>
+                  <source src="static/images/ina.mp4" type="video/mp4">
+                </video>
+              </figure>
+            </article>
+          </div>
 
-                </a>
+        </div>
+      </section>
+
+      <section class="section method-section" id="method">
+        <div class="section-inner">
+          <div class="section-heading wide">
+            <h2 class="system-design-title">System Design</h2>
+          </div>
+
+          <figure class="system-overview-svg-frame" data-system-overview>
+            <div class="system-overview-controls">
+              <button class="system-overview-overall-button" type="button" data-system-overview-overall aria-pressed="true">
+                Overall System Design
+              </button>
+              <div class="system-overview-nav-buttons" aria-label="System overview step navigation">
+                <button class="system-overview-nav-button" type="button" data-system-overview-prev>
+                  Previous
+                </button>
+                <button class="system-overview-nav-button" type="button" data-system-overview-next>
+                  Next
+                </button>
+              </div>
+              <span class="system-overview-control-hint" aria-hidden="true">
+                <span>click</span>
+                <span class="system-overview-control-number"><span>1</span></span>
+                <span>button!</span>
               </span>
             </div>
+            <div class="system-overview-interactive">
+              <img
+                src="static/images/system%20overview.svg"
+                alt="INA system overview diagram showing intention elicitation, behavior monitoring, user support, and feedback refinement."
+              >
+              <div class="system-overview-video-crop system-overview-video-hci" aria-hidden="true">
+                <video autoplay muted loop playsinline preload="metadata">
+                  <source src="static/images/left_whatis_hci-first3.mp4" type="video/mp4">
+                </video>
+              </div>
+              <div class="system-overview-video-crop system-overview-video-shorts" aria-hidden="true">
+                <video autoplay muted loop playsinline preload="metadata">
+                  <source src="static/images/right_cutes_shorts.mp4" type="video/mp4">
+                </video>
+              </div>
+              <div class="system-step1-concept" aria-hidden="true">
+                <div class="system-step1-person-area">
+                  <p>Study</p>
+                  <img src="static/images/juheon.png" alt="">
+                </div>
+                <div class="system-step1-agent-area">
+                  <div class="system-step1-floating-words">
+                    <span>AI?</span>
+                    <span>History?</span>
+                    <span>Art?</span>
+                  </div>
+                  <img src="static/images/agent.png" alt="">
+                </div>
+              </div>
+              <div class="system-step23-concept" aria-hidden="true">
+                <div class="system-step23-video-frame">
+                  <video autoplay muted loop playsinline preload="metadata">
+                    <source src="static/images/1_intention_input.mp4" type="video/mp4">
+                  </video>
+                </div>
+                <div class="system-step23-result-area">
+                  <span class="system-step23-arrow" aria-hidden="true"></span>
+                  <div class="system-step23-intention-box">User Intention</div>
+                </div>
+              </div>
+              <span class="system-overview-region system-overview-region-1" data-system-overview-region="1" aria-hidden="true"></span>
+              <span class="system-overview-region system-overview-region-2" data-system-overview-region="2" aria-hidden="true"></span>
+              <span class="system-overview-region system-overview-region-3" data-system-overview-region="3" aria-hidden="true"></span>
+              <span class="system-overview-region system-overview-region-4" data-system-overview-region="4" aria-hidden="true"></span>
+              <span class="system-overview-region system-overview-region-5" data-system-overview-region="5" aria-hidden="true"></span>
+              <span class="system-overview-region system-overview-region-6" data-system-overview-region="6" aria-hidden="true"></span>
+              <span class="system-overview-region system-overview-region-7" data-system-overview-region="7" aria-hidden="true"></span>
+              <button class="system-overview-hotspot system-overview-hotspot-1" type="button" data-system-overview-step="1" aria-label="Explain intention input"></button>
+              <button class="system-overview-hotspot system-overview-hotspot-2" type="button" data-system-overview-step="2" aria-label="Explain clarification suggestion"></button>
+              <button class="system-overview-hotspot system-overview-hotspot-3" type="button" data-system-overview-step="3" aria-label="Explain desired goal"></button>
+              <button class="system-overview-hotspot system-overview-hotspot-4" type="button" data-system-overview-step="4" aria-label="Explain distraction detector"></button>
+              <button class="system-overview-hotspot system-overview-hotspot-5" type="button" data-system-overview-step="5" aria-label="Explain user support"></button>
+              <button class="system-overview-hotspot system-overview-hotspot-6" type="button" data-system-overview-step="6" aria-label="Explain user feedback"></button>
+              <button class="system-overview-hotspot system-overview-hotspot-7" type="button" data-system-overview-step="7" aria-label="Explain refinement"></button>
+            </div>
+            <figcaption class="system-overview-caption" aria-live="polite">
+              <strong data-system-overview-title>Overall System Design</strong>
+              <span data-system-overview-copy>INA connects intention elicitation, screen-context monitoring, user support, and feedback-based refinement.</span>
+            </figcaption>
+          </figure>
+
+          <article class="method-subsection implementation-block">
+            <div class="method-subsection-heading">
+              <h3>Demo</h3>
+            </div>
+            <p class="method-subsection-copy">
+              A walkthrough of INA's desktop interaction flow in use.
+            </p>
+            <figure class="ina-demo-video-frame">
+              <video autoplay muted loop playsinline preload="auto" aria-label="INA demo video">
+                <source src="static/images/INA_DEMO1.mp4" type="video/mp4">
+              </video>
+            </figure>
+          </article>
+        </div>
+      </section>
+
+      <section class="section study-section evaluation-section" id="detection-evaluation">
+        <div class="section-inner">
+          <div class="section-heading wide">
+            <h2 class="motivation-title result-title">Evaluation of Distraction Detection</h2>
+            <p class="section-lede">
+              INA detects whether ongoing digital activity matches a user's stated intention.
+            </p>
+            <p>
+              We evaluate how clarification and user feedback affect distraction detection on
+              IntentionBench and real-world usage data sampled from deployment logs.
+            </p>
+          </div>
+
+          <article class="chart-panel detection-panel" data-animate>
+            <div class="chart-header">
+              <div>
+                <span>IntentionBench</span>
+                <h3>Clarification and feedback jointly improve distraction detection.</h3>
+              </div>
+              <button class="detail-inline-button" type="button" data-detail-toggle="#detail-detection" data-detail-title="Detection Evaluation Details" aria-label="Open detection evaluation details">
+                +
+              </button>
+            </div>
+            <figure class="bench-table-figure" role="img" aria-label="Table 1. IntentionBench results. The full INA configuration with clarification and feedback has 0.878 accuracy, 0.959 precision, 0.755 recall, and 0.845 F1.">
+              <figcaption>
+                <strong>Table 1:</strong> Effectiveness of INA on IntentionBench.
+              </figcaption>
+              <div class="bench-table-scroll">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Clarification</th>
+                      <th>Feedback</th>
+                      <th>Accuracy</th>
+                      <th>Precision</th>
+                      <th>Recall</th>
+                      <th>F1</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>&ndash;</td>
+                      <td>&ndash;</td>
+                      <td>0.805</td>
+                      <td>0.897</td>
+                      <td>0.629</td>
+                      <td>0.739</td>
+                    </tr>
+                    <tr>
+                      <td>&check;</td>
+                      <td>&ndash;</td>
+                      <td>0.871</td>
+                      <td>0.949</td>
+                      <td>0.748</td>
+                      <td>0.836</td>
+                    </tr>
+                    <tr>
+                      <td>&ndash;</td>
+                      <td>&check;</td>
+                      <td>0.845</td>
+                      <td><strong>0.959</strong></td>
+                      <td>0.677</td>
+                      <td>0.794</td>
+                    </tr>
+                    <tr class="deployed-row">
+                      <td>&check;</td>
+                      <td>&check;</td>
+                      <td><strong>0.878</strong></td>
+                      <td><strong>0.959</strong></td>
+                      <td><strong>0.755</strong></td>
+                      <td><strong>0.845</strong></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </figure>
+            <p class="chart-copy">
+              The deployed configuration reached 0.878 accuracy and 0.845 F1 on IntentionBench,
+              and 0.899 accuracy on a real-world usage dataset sampled from deployment logs.
+            </p>
+          </article>
+
+          <div class="detail-source" id="detail-detection" hidden>
+            <p>
+              Table 1 evaluates Gemini 2.0-Flash on IntentionBench. No interaction reached 0.805 accuracy and 0.739 F1. Clarification raised performance to 0.871 accuracy and 0.836 F1; feedback alone reached 0.845 accuracy and 0.794 F1.
+            </p>
+            <p>
+              The full deployed configuration with clarification and feedback reached 0.878 accuracy, 0.959 precision, 0.755 recall, and 0.845 F1. Appendix B.3 reports 0.899 accuracy and 0.815 balanced accuracy on real-world usage data.
+            </p>
           </div>
         </div>
-      </div>
-    </div>
-  </div>
-</section>
-<!-- Teaser image-->
-<section class="hero teaser">
-  <div class="container is-max-desktop">
-    <div class="hero-body">
-      <!-- Teaser image -->
-        <!-- <img src="static/images/1_INA.png" alt="INA System Overview"/> -->
-        <video poster="" id="video3" controls muted loop height="100%" preload="metadata">
-          <!-- Your video file here -->
-          <source src="static/videos/banner_video.mp4" type="video/mp4">
-        </video>
-      <!-- Image description -->
-      <!-- <h2 class="subtitle has-text-centered">
-        Overview of Intent Assistant (INA). Based on users’ stated intentions, INA monitors on-screen context to detect
-distractions and delivers timely interventions. 
-By steering attention back to the stated intention, INA supports intentional
-digital living. The text inside each message box is taken verbatim from what the system would actually display when operating
-under that intention.
-      </h2> -->
-    </div>
-  </div>
-</section>
-<!-- End teaser image -->
+      </section>
 
-<!-- Paper abstract -->
-<section class="section hero is-light">
-  <div class="container is-max-desktop">
-    <div class="columns is-centered has-text-centered">
-      <div class="column is-four-fifths">
-        <h2 class="title is-3">Abstract</h2>
-        <div class="content has-text-justified">
-          <!-- TODO: Replace with your paper abstract -->
-          <p>
-            When working on digital devices, people often face distractions that can lead to a decline in productivity and efficiency, as well as negative psychological and emotional impacts. To address this challenge, we introduce a novel AI assistant that elicits a user's intention, assesses whether ongoing activities are in line with that intention, and provides gentle nudges when deviations occur. The system leverages a large language model to analyze screenshots, application titles, and URLs, issuing notifications when behavior diverges from the stated goal. Its detection accuracy is refined through initial clarification dialogues and continuous user feedback. In a three-week, within-subjects field deployment with 22 participants, we compared our assistant to both a rule-based intent reminder system and a passive baseline that only logged activity. Results indicate that our AI assistant effectively supports users in maintaining focus and aligning their digital behavior with their intentions.
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-<!-- End paper abstract -->
-
-
-
-
-<!-- System Design -->
-<section class="hero is-small">
-  <div class="hero-body">
-    <div class="container is-max-desktop">
-      <div class="columns is-centered has-text-centered">
-        <div class="column is-four-fifths">
-          <!-- System Design title -->
-          <h2 class="title is-3">System Design</h2>
-          <div class="publication-banner">
-            <img src="static/images/2_system-design.png" alt="INA System Design"/>
+      <section class="section study-section user-study-section" id="user-study-design">
+        <div class="section-inner">
+          <div class="section-heading wide">
+            <h2 class="motivation-title result-title">User Study Design</h2>
           </div>
-          <!-- Image description -->
-          <h2 class="subtitle has-text-centered">
-            (1) The process begins with a user's initial, often abstract, intention. (2) The system engages in an
-            LLM Q&A interaction to (3) establish a clarified user intention. (4) An LLM detector then analyzes on-screen activity, using a
-            distraction score to classify the user's state as on-task or off-task. (5) Based on this state, the system delivers a gentle nudge or
-            positive reinforcement. (6) The user can provide feedback on this intervention, which (7) the LLM uses to refine its model,
-            improving detection accuracy for future interactions.
-          </h2>
         </div>
-      </div>
-    </div>
-  </div>
-</section>
-<!-- End system design -->
+      </section>
 
+      <section class="section study-section result-section" id="study">
+        <div class="section-inner">
+          <div class="section-heading wide">
+            <h2 class="motivation-title result-title">Results</h2>
+            <p class="section-lede">
+              INA reduces off-task behavior and improves intention alignment during everyday computer use.
+            </p>
+            <p>
+              Results report field deployment outcomes, weekly survey measures,
+              and participant experience across the three study conditions.
+            </p>
+          </div>
 
+          <article class="chart-panel main-results-panel" data-animate>
+            <div class="chart-header">
+              <div>
+                <span>Field Deployment</span>
+                <h3>INA improved intentional activity during everyday computer use.</h3>
+              </div>
+              <button class="detail-inline-button" type="button" data-detail-toggle="#detail-field-study" data-detail-title="Field Study Details" aria-label="Open field study details">
+                +
+              </button>
+            </div>
+            <figure
+              class="paper-svg-figure figure-six-svg"
+              role="img"
+              aria-label="Figure 6. INA has lower LLM-estimated off-task ratio than Simple Reminder, 0.104 versus 0.166, and higher intention alignment rating, 4.44 versus 4.23. Both differences are significant at p less than 0.001."
+            >
+              <svg class="result-svg" viewBox="0 0 1700 520" aria-hidden="true">
+                <g class="svg-panel" transform="translate(38 44)">
+                  <text class="svg-y-label" x="145" y="105" text-anchor="end">INA</text>
+                  <text class="svg-y-label" x="145" y="208" text-anchor="end">
+                    <tspan x="145">Simple</tspan>
+                    <tspan x="145" dy="36">Reminder</tspan>
+                  </text>
+                  <line class="svg-axis" x1="190" y1="0" x2="190" y2="292"></line>
+                  <rect class="svg-hbar svg-ina" x="190" y="70" width="218" height="70"></rect>
+                  <rect class="svg-hbar svg-reminder" x="190" y="180" width="349" height="70"></rect>
+                  <g class="svg-late svg-error">
+                    <line x1="332" y1="105" x2="486" y2="105"></line>
+                    <line x1="332" y1="93" x2="332" y2="117"></line>
+                    <line x1="486" y1="93" x2="486" y2="117"></line>
+                    <line x1="408" y1="215" x2="673" y2="215"></line>
+                    <line x1="408" y1="203" x2="408" y2="227"></line>
+                    <line x1="673" y1="203" x2="673" y2="227"></line>
+                  </g>
+                  <text class="svg-value" x="508" y="114">0.104</text>
+                  <text class="svg-value" x="696" y="224">0.166</text>
+                  <g class="svg-late svg-bracket">
+                    <path d="M 775 105 H 750 M 775 105 V 215 M 775 215 H 750"></path>
+                    <text x="804" y="160" transform="rotate(90 804 160)">***</text>
+                  </g>
+                  <g class="svg-ticks" transform="translate(190 292)">
+                    <line class="svg-axis" x1="0" y1="0" x2="630" y2="0"></line>
+                    <g>
+                      <line x1="0" y1="0" x2="0" y2="7"></line><text x="0" y="42">0.00</text>
+                      <line x1="105" y1="0" x2="105" y2="7"></line><text x="105" y="42">0.05</text>
+                      <line x1="210" y1="0" x2="210" y2="7"></line><text x="210" y="42">0.10</text>
+                      <line x1="315" y1="0" x2="315" y2="7"></line><text x="315" y="42">0.15</text>
+                      <line x1="420" y1="0" x2="420" y2="7"></line><text x="420" y="42">0.20</text>
+                      <line x1="525" y1="0" x2="525" y2="7"></line><text x="525" y="42">0.25</text>
+                      <line x1="630" y1="0" x2="630" y2="7"></line><text x="630" y="42">0.30</text>
+                    </g>
+                  </g>
+                  <text class="svg-subcaption" x="505" y="408" text-anchor="middle">
+                    <tspan>(a) LLM-estimated off-task ratio</tspan>
+                    <tspan x="505" dy="38">(&darr;)</tspan>
+                  </text>
+                </g>
 
+                <g class="svg-panel" transform="translate(858 44)">
+                  <text class="svg-y-label" x="145" y="105" text-anchor="end">INA</text>
+                  <text class="svg-y-label" x="145" y="208" text-anchor="end">
+                    <tspan x="145">Simple</tspan>
+                    <tspan x="145" dy="36">Reminder</tspan>
+                  </text>
+                  <line class="svg-axis" x1="190" y1="0" x2="190" y2="292"></line>
+                  <rect class="svg-hbar svg-ina" x="190" y="70" width="395" height="70"></rect>
+                  <rect class="svg-hbar svg-reminder" x="190" y="180" width="307" height="70"></rect>
+                  <g class="svg-late svg-error">
+                    <line x1="516" y1="105" x2="662" y2="105"></line>
+                    <line x1="516" y1="93" x2="516" y2="117"></line>
+                    <line x1="662" y1="93" x2="662" y2="117"></line>
+                    <line x1="474" y1="215" x2="612" y2="215"></line>
+                    <line x1="474" y1="203" x2="474" y2="227"></line>
+                    <line x1="612" y1="203" x2="612" y2="227"></line>
+                  </g>
+                  <text class="svg-value" x="688" y="114">4.44</text>
+                  <text class="svg-value" x="638" y="224">4.23</text>
+                  <g class="svg-late svg-bracket">
+                    <path d="M 782 105 H 758 M 782 105 V 215 M 782 215 H 758"></path>
+                    <text x="812" y="160" transform="rotate(90 812 160)">***</text>
+                  </g>
+                  <g class="svg-ticks" transform="translate(190 292)">
+                    <line class="svg-axis" x1="0" y1="0" x2="630" y2="0"></line>
+                    <g>
+                      <line x1="0" y1="0" x2="0" y2="7"></line><text x="0" y="42">3.50</text>
+                      <line x1="105" y1="0" x2="105" y2="7"></line><text x="105" y="42">3.75</text>
+                      <line x1="210" y1="0" x2="210" y2="7"></line><text x="210" y="42">4.00</text>
+                      <line x1="315" y1="0" x2="315" y2="7"></line><text x="315" y="42">4.25</text>
+                      <line x1="420" y1="0" x2="420" y2="7"></line><text x="420" y="42">4.50</text>
+                      <line x1="525" y1="0" x2="525" y2="7"></line><text x="525" y="42">4.75</text>
+                      <line x1="630" y1="0" x2="630" y2="7"></line><text x="630" y="42">5.00</text>
+                    </g>
+                  </g>
+                  <text class="svg-subcaption" x="505" y="408" text-anchor="middle">(b) Intention alignment rating (&uarr;)</text>
+                </g>
+              </svg>
+              <figcaption class="paper-svg-caption">
+                <strong>Figure 6:</strong> (a) Mean LLM-estimated off-task ratio. (b) Mean intention alignment rating based on end-of-session self-reports. Error bars denote 95% confidence intervals across participants (user-averaged). ***, **, and *, indicate significance of p &lt; 0.001, p &lt; 0.01, p &lt; 0.05, respectively. Arrows indicate whether higher (&uarr;) or lower (&darr;) values are more favorable.
+              </figcaption>
+            </figure>
+          </article>
 
-<!--BibTex citation -->
-  <section class="section" id="BibTeX">
-    <div class="container is-max-desktop content">
-      <div class="bibtex-header">
-        <h2 class="title">BibTeX</h2>
-        <button class="copy-bibtex-btn" onclick="copyBibTeX()" title="Copy BibTeX to clipboard">
-          <i class="fas fa-copy"></i>
-          <span class="copy-text">Copy</span>
+          <div class="secondary-chart-grid">
+            <article class="chart-panel survey-results-panel" data-animate>
+              <div class="chart-header">
+                <div>
+                  <span>User Experience</span>
+                  <h3>Participants rated INA highest for support and message effectiveness.</h3>
+                </div>
+                <button class="detail-inline-button" type="button" data-detail-toggle="#detail-survey" data-detail-title="Survey Details" aria-label="Open survey details">
+                  +
+                </button>
+              </div>
+              <figure
+                class="paper-svg-figure figure-seven-svg"
+                role="img"
+                aria-label="Figure 7. Focused immersion: Logging Only 2.90, Simple Reminder 3.34, INA 3.74. Support: 2.75, 3.56, 3.75. Message effectiveness: Simple Reminder 3.24, INA 3.74. Workflow disruption: Logging Only 3.91, Simple Reminder 3.91, INA 3.09."
+              >
+                <svg class="result-svg" viewBox="0 0 1700 820" aria-hidden="true">
+                  <g class="svg-legend" transform="translate(792 34)">
+                    <rect x="0" y="0" width="812" height="58" rx="4"></rect>
+                    <rect class="svg-logging" x="30" y="18" width="64" height="22"></rect>
+                    <text x="122" y="40">Logging Only</text>
+                    <rect class="svg-reminder" x="330" y="18" width="64" height="22"></rect>
+                    <text x="422" y="40">Simple Reminder</text>
+                    <rect class="svg-ina" x="662" y="18" width="64" height="22"></rect>
+                    <text x="754" y="40">INA</text>
+                  </g>
+
+                  <g class="svg-vpanel" transform="translate(20 120)">
+                    <text class="svg-axis-title" x="38" y="350" transform="rotate(-90 38 350)">Average Score (1-5)</text>
+                    <g class="svg-vticks">
+                      <text x="102" y="568">0.0</text><text x="102" y="484">1.0</text><text x="102" y="400">2.0</text>
+                      <text x="102" y="316">3.0</text><text x="102" y="232">4.0</text><text x="102" y="148">5.0</text>
+                    </g>
+                    <line class="svg-axis" x1="130" y1="140" x2="130" y2="560"></line>
+                    <line class="svg-axis" x1="130" y1="560" x2="562" y2="560"></line>
+                    <rect class="svg-vbar svg-logging" x="245" y="316" width="78" height="244"></rect>
+                    <rect class="svg-vbar svg-reminder" x="330" y="279" width="78" height="281"></rect>
+                    <rect class="svg-vbar svg-ina" x="415" y="246" width="78" height="314"></rect>
+                    <g class="svg-late svg-error">
+                      <path d="M284 282 V348 M268 282 H300 M268 348 H300"></path>
+                      <path d="M369 240 V318 M353 240 H385 M353 318 H385"></path>
+                      <path d="M454 218 V282 M438 218 H470 M438 282 H470"></path>
+                    </g>
+                    <text class="svg-bar-value" x="284" y="270">2.90</text>
+                    <text class="svg-bar-value" x="369" y="228">3.34</text>
+                    <text class="svg-bar-value" x="454" y="206">3.74</text>
+                    <g class="svg-late svg-vbracket">
+                      <path d="M245 86 V72 H493 V86"></path><text x="369" y="60">***</text>
+                      <path d="M330 132 V118 H493 V132"></path><text x="412" y="106">*</text>
+                      <path d="M245 178 V164 H408 V178"></path><text x="327" y="152">*</text>
+                    </g>
+                    <text class="svg-x-label" x="370" y="602">Focused Immersion</text>
+                    <text class="svg-subcaption" x="358" y="704">(a) Focused Immersion Score (&uarr;)</text>
+                  </g>
+
+                  <g class="svg-vpanel" transform="translate(600 120)">
+                    <text class="svg-axis-title" x="38" y="350" transform="rotate(-90 38 350)">Average Score (1-5)</text>
+                    <g class="svg-vticks">
+                      <text x="102" y="568">0.0</text><text x="102" y="484">1.0</text><text x="102" y="400">2.0</text>
+                      <text x="102" y="316">3.0</text><text x="102" y="232">4.0</text><text x="102" y="148">5.0</text>
+                    </g>
+                    <line class="svg-axis" x1="130" y1="140" x2="130" y2="560"></line>
+                    <line class="svg-axis" x1="130" y1="560" x2="1060" y2="560"></line>
+                    <rect class="svg-vbar svg-logging" x="215" y="329" width="66" height="231"></rect>
+                    <rect class="svg-vbar svg-reminder" x="285" y="261" width="66" height="299"></rect>
+                    <rect class="svg-vbar svg-ina" x="355" y="245" width="66" height="315"></rect>
+                    <rect class="svg-vbar svg-reminder" x="555" y="288" width="66" height="272"></rect>
+                    <rect class="svg-vbar svg-ina" x="625" y="246" width="66" height="314"></rect>
+                    <rect class="svg-vbar svg-logging" x="835" y="232" width="66" height="328"></rect>
+                    <rect class="svg-vbar svg-reminder" x="905" y="232" width="66" height="328"></rect>
+                    <rect class="svg-vbar svg-ina" x="975" y="300" width="66" height="260"></rect>
+                    <g class="svg-late svg-error">
+                      <path d="M248 292 V366 M232 292 H264 M232 366 H264"></path>
+                      <path d="M318 224 V298 M302 224 H334 M302 298 H334"></path>
+                      <path d="M388 220 V270 M372 220 H404 M372 270 H404"></path>
+                      <path d="M588 250 V326 M572 250 H604 M572 326 H604"></path>
+                      <path d="M658 218 V274 M642 218 H674 M642 274 H674"></path>
+                      <path d="M868 190 V274 M852 190 H884 M852 274 H884"></path>
+                      <path d="M938 198 V266 M922 198 H954 M922 266 H954"></path>
+                      <path d="M1008 256 V344 M992 256 H1024 M992 344 H1024"></path>
+                    </g>
+                    <text class="svg-bar-value" x="248" y="280">2.75</text>
+                    <text class="svg-bar-value" x="318" y="212">3.56</text>
+                    <text class="svg-bar-value" x="388" y="208">3.75</text>
+                    <text class="svg-bar-value" x="588" y="238">3.24</text>
+                    <text class="svg-bar-value" x="658" y="206">3.74</text>
+                    <text class="svg-bar-value" x="868" y="178">3.91</text>
+                    <text class="svg-bar-value" x="938" y="186">3.91</text>
+                    <text class="svg-bar-value" x="1008" y="244">3.09</text>
+                    <g class="svg-late svg-vbracket">
+                      <path d="M215 86 V72 H421 V86"></path><text x="318" y="60">***</text>
+                      <path d="M215 132 V118 H351 V132"></path><text x="283" y="106">***</text>
+                      <path d="M555 132 V118 H691 V132"></path><text x="623" y="106">*</text>
+                      <path d="M835 86 V72 H1041 V86"></path><text x="938" y="60">**</text>
+                      <path d="M905 132 V118 H1041 V132"></path><text x="973" y="106">**</text>
+                    </g>
+                    <text class="svg-x-label" x="318" y="602">Support</text>
+                    <text class="svg-x-label" x="623" y="586">
+                      <tspan x="623">Message</tspan>
+                      <tspan x="623" dy="34">Effectiveness</tspan>
+                    </text>
+                    <text class="svg-x-label" x="938" y="586">
+                      <tspan x="938">Workflow</tspan>
+                      <tspan x="938" dy="34">Disruption</tspan>
+                    </text>
+                    <text class="svg-subcaption" x="610" y="704">(b) User experience survey scores (&uarr;)</text>
+                  </g>
+                </svg>
+                <figcaption class="paper-svg-caption">
+                  <strong>Figure 7:</strong> (a) Mean focused immersion scores, a self-reported measure of concentration taken during the weekly post-survey. (b) Mean user experience survey scores, computed by averaging responses within categories: Support, Message Effectiveness, Workflow Disruption. Error bars denote 95% confidence intervals across participants (user-averaged). ***, **, and *, indicate significance of p &lt; 0.001, p &lt; 0.01, p &lt; 0.05, respectively. (&uarr;) indicates that higher values are more favorable.
+                </figcaption>
+              </figure>
+            </article>
+
+          </div>
+
+          <div class="detail-source" id="detail-field-study" hidden>
+            <p>
+              Three-week within-subjects study with 22 participants. INA reduced LLM-estimated off-task ratio from 0.166 to 0.104 compared with simple reminder (p &lt; .001), and increased intention alignment from 4.23 to 4.44 (p &lt; .001).
+            </p>
+            <p>
+              Focused immersion was 3.74 for INA, 3.34 for simple reminder, and 2.90 for logging only. The study logged 1,786 sessions, 1,360 hours of usage, and 2,449,690 context records.
+            </p>
+          </div>
+          <div class="detail-source" id="detail-survey" hidden>
+            <p>
+              Figure 7b reports weekly survey categories. INA scored 3.75 on Support, compared with 3.56 for simple reminder and 2.75 for logging only. Message Effectiveness was 3.74 for INA and 3.24 for simple reminder.
+            </p>
+            <p>
+              Workflow Disruption was lower for INA (3.09) than both baselines (3.91), indicating that the more active assistant introduced interruptions that future designs should tune.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section discussion-section" id="discussion">
+        <div class="section-inner">
+          <div class="section-heading wide">
+            <h2 class="motivation-title result-title">Discussion</h2>
+          </div>
+        </div>
+      </section>
+
+      <section class="section dataset-section" id="dataset">
+        <div class="section-inner split">
+          <div class="section-heading">
+            <h2>IntentionBench</h2>
+            <p class="section-lede">
+              A benchmark for detecting whether digital behavior matches a stated intention.
+            </p>
+            <p>
+              The benchmark includes focused sessions and mixed sessions where users drift
+              across on-task and off-task activities under the same high-level intention.
+            </p>
+            <a class="button inline-button" href="https://huggingface.co/datasets/juheonch/intention_bench" target="_blank" rel="noopener">
+              <span class="link-icon image-icon" aria-hidden="true"><img src="static/images/huggingface-logo.svg" alt=""></span>
+              <span>Open Dataset</span>
+            </a>
+          </div>
+          <figure class="dataset-figure-frame">
+            <img src="static/images/4_intentionbench.png" alt="IntentionBench session examples.">
+          </figure>
+        </div>
+      </section>
+
+      <section class="section resource-section" id="resources">
+        <div class="section-inner">
+          <div class="section-heading wide">
+            <h2>Resources</h2>
+            <p class="section-lede">Paper, implementation, dataset, app download, and usage guide.</p>
+          </div>
+          <div class="resource-list" aria-label="Project resources">
+            <a href="https://arxiv.org/abs/2510.14513" target="_blank" rel="noopener">
+              <span class="resource-label"><span class="link-icon" aria-hidden="true"><i class="ai ai-arxiv"></i></span>Paper</span>
+              <strong>arXiv</strong>
+            </a>
+            <a href="https://github.com/IntentAssistant/INA/tree/main" target="_blank" rel="noopener">
+              <span class="resource-label"><span class="link-icon" aria-hidden="true"><i class="fab fa-github"></i></span>Code</span>
+              <strong>GitHub</strong>
+            </a>
+            <a href="https://huggingface.co/datasets/juheonch/intention_bench" target="_blank" rel="noopener">
+              <span class="resource-label"><span class="link-icon image-icon" aria-hidden="true"><img src="static/images/huggingface-logo.svg" alt=""></span>Dataset</span>
+              <strong>Hugging Face</strong>
+            </a>
+            <a href="https://github.com/IntentAssistant/INA/releases/download/v1.0.0/IntentAssistant-v1.0.0.dmg" target="_blank" rel="noopener">
+              <span class="resource-label"><span class="link-icon image-icon" aria-hidden="true"><img src="static/images/INA.png" alt=""></span>App</span>
+              <strong>macOS DMG</strong>
+            </a>
+            <a href="https://iing.notion.site/INA-Intent-Assistant-Application-Guide-29b5c593a80880479e92cd106deb868f" target="_blank" rel="noopener">
+              <span class="resource-label"><span class="link-icon" aria-hidden="true"><i class="fas fa-question-circle"></i></span>Guide</span>
+              <strong>Notion</strong>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section class="section citation-section" id="citation">
+        <div class="section-inner split">
+          <div>
+            <h2>Citation</h2>
+            <p>
+              If you find this work useful, please cite the paper using the BibTeX entry.
+            </p>
+          </div>
+          <div class="citation-box">
+            <pre><code id="bibtex">@inproceedings{choi2026state,
+  title = {State Your Intention to Steer Your Attention: An AI Assistant for Intentional Digital Living},
+  author = {Choi, Juheon and Lee, Juyong and Kim, Jian and Kim, ChanYoung and Min, Taywon and Knox, W. Bradley and Lee, Min Kyung and Lee, Kimin},
+  booktitle = {Proceedings of the 2026 CHI Conference on Human Factors in Computing Systems},
+  pages = {1--29},
+  year = {2026}
+}</code></pre>
+            <button class="button copy-button" type="button" data-copy="#bibtex">
+              Copy BibTeX
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <dialog class="detail-modal" id="detail-modal" aria-labelledby="detail-modal-title">
+      <div class="detail-modal-panel">
+        <button class="detail-modal-close" type="button" data-detail-modal-close aria-label="Close detail panel">
+          &times;
         </button>
+        <h3 id="detail-modal-title">Details</h3>
+        <div class="detail-modal-body" data-detail-modal-body></div>
       </div>
-      <pre id="bibtex-code"><code>@inproceedings{choi2026state,
-        title={State Your Intention to Steer Your Attention: An AI Assistant for Intentional Digital Living},
-        author={Choi, Juheon and Lee, Juyong and Kim, Jian and Kim, ChanYoung and Min, Taywon and Knox, W Bradley and Lee, Min Kyung and Lee, Kimin},
-        booktitle={Proceedings of the 2026 CHI Conference on Human Factors in Computing Systems},
-        pages={1--29},
-        year={2026}
-  }</code></pre>
-    </div>
-</section>
-<!--End BibTex citation -->
+    </dialog>
 
-
-  <footer class="footer">
-  <div class="container">
-    <div class="columns is-centered">
-      <div class="column is-8">
-        <div class="content">
-
-          <p>
-            This page was built using the <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank">Academic Project Page Template</a> which was adopted from the <a href="https://nerfies.github.io" target="_blank">Nerfies</a> project page.
-            You are free to borrow the source code of this website, we just ask that you link back to this page in the footer. <br> This website is licensed under a <a rel="license"  href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative
-            Commons Attribution-ShareAlike 4.0 International License</a>.
-          </p>
-
-        </div>
-      </div>
-    </div>
-  </div>
-</footer>
-
-<!-- Statcounter tracking code -->
-  
-<!-- You can add a tracker to track page visits by creating an account at statcounter.com -->
-
-    <!-- End of Statcounter Code -->
-
+    <footer class="site-footer">
+      <p class="footer-credit">
+        Site designed by <a href="https://juheonchoi.com" target="_blank" rel="noopener">Juheon Choi</a>.
+      </p>
+    </footer>
   </body>
-  </html>
+</html>
