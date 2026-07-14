@@ -1,5 +1,88 @@
 document.documentElement.classList.add("js-enabled");
 
+const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+const animatedPaperTitle = document.querySelector("[data-paper-title]");
+const animatedPaperTitleText = animatedPaperTitle?.querySelector("[data-paper-title-type]");
+
+if (animatedPaperTitle && animatedPaperTitleText) {
+  const fullTitleText = animatedPaperTitleText.getAttribute("data-text") || "";
+  const finishPaperTitle = () => {
+    animatedPaperTitleText.textContent = fullTitleText;
+    animatedPaperTitle.classList.add("is-typing-complete");
+    animatedPaperTitle.closest(".paper-title-block")?.classList.add("is-title-sequence-complete");
+  };
+
+  if (reducedMotionQuery.matches) {
+    finishPaperTitle();
+  } else {
+    animatedPaperTitleText.textContent = "";
+    let titleCharacterIndex = 0;
+
+    const typePaperTitleCharacter = () => {
+      titleCharacterIndex += 1;
+      animatedPaperTitleText.textContent = fullTitleText.slice(0, titleCharacterIndex);
+
+      if (titleCharacterIndex < fullTitleText.length) {
+        const characterDelay = fullTitleText[titleCharacterIndex - 1] === " " ? 110 : 72;
+        window.setTimeout(typePaperTitleCharacter, characterDelay);
+      } else {
+        window.setTimeout(finishPaperTitle, 180);
+      }
+    };
+
+    window.setTimeout(typePaperTitleCharacter, 360);
+  }
+}
+
+const clamp01 = (value) => Math.min(1, Math.max(0, value));
+const rangeProgress = (progress, start, end) => {
+  const value = clamp01((progress - start) / Math.max(0.0001, end - start));
+  return value * value * (3 - 2 * value);
+};
+const getScrollProgress = (section) => {
+  const rect = section.getBoundingClientRect();
+  const scrollable = Math.max(1, rect.height - window.innerHeight);
+  return clamp01(-rect.top / scrollable);
+};
+const setVideoProgress = (video, progress) => {
+  if (!video || !Number.isFinite(video.duration) || video.duration <= 0) return;
+  const targetTime = clamp01(progress) * Math.max(0, video.duration - 0.05);
+  if (Math.abs(video.currentTime - targetTime) < 0.035) return;
+  try {
+    video.currentTime = targetTime;
+  } catch {
+    // Metadata can arrive one frame after the scroll scene becomes visible.
+  }
+};
+
+const inViewAutoplayVideos = Array.from(
+  document.querySelectorAll("video[data-autoplay-in-view]"),
+);
+
+if ("IntersectionObserver" in window && inViewAutoplayVideos.length) {
+  const autoplayObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        const video = entry.target;
+        if (entry.isIntersecting && !reducedMotionQuery.matches) {
+          const playPromise = video.play();
+          if (playPromise?.catch) playPromise.catch(() => {});
+        } else {
+          video.pause();
+        }
+      });
+    },
+    { rootMargin: "18% 0px", threshold: 0.12 },
+  );
+
+  inViewAutoplayVideos.forEach((video) => autoplayObserver.observe(video));
+  reducedMotionQuery.addEventListener?.("change", () => {
+    if (!reducedMotionQuery.matches) return;
+    inViewAutoplayVideos.forEach((video) => video.pause());
+  });
+}
+
 const animatedElements = Array.from(document.querySelectorAll("[data-animate]"));
 
 if ("IntersectionObserver" in window && animatedElements.length) {
@@ -22,76 +105,6 @@ if ("IntersectionObserver" in window && animatedElements.length) {
   animatedElements.forEach((element) => element.classList.add("is-visible"));
 }
 
-const hero = document.querySelector(".hero");
-const heroScrollTarget = document.querySelector(".paper-title-block");
-
-if (hero && heroScrollTarget) {
-  let isHeroSnapping = false;
-  let heroTouchStartY = 0;
-
-  const prefersReducedMotion = () =>
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-  const getHeroTargetY = () =>
-    heroScrollTarget.getBoundingClientRect().top + window.scrollY;
-
-  const canSnapFromHero = (deltaY) => {
-    if (deltaY <= 0 || isHeroSnapping) return false;
-    const targetY = getHeroTargetY();
-    return window.scrollY < targetY - 4 && hero.getBoundingClientRect().bottom > 24;
-  };
-
-  const snapFromHero = () => {
-    isHeroSnapping = true;
-    window.scrollTo({
-      top: getHeroTargetY(),
-      behavior: prefersReducedMotion() ? "auto" : "smooth",
-    });
-    window.setTimeout(() => {
-      isHeroSnapping = false;
-    }, 850);
-  };
-
-  window.addEventListener(
-    "wheel",
-    (event) => {
-      if (!canSnapFromHero(event.deltaY)) return;
-      event.preventDefault();
-      snapFromHero();
-    },
-    { passive: false },
-  );
-
-  window.addEventListener(
-    "touchstart",
-    (event) => {
-      heroTouchStartY = event.touches[0]?.clientY || 0;
-    },
-    { passive: true },
-  );
-
-  window.addEventListener(
-    "touchmove",
-    (event) => {
-      const touchY = event.touches[0]?.clientY || heroTouchStartY;
-      const deltaY = heroTouchStartY - touchY;
-      if (!canSnapFromHero(deltaY)) return;
-      event.preventDefault();
-      heroTouchStartY = touchY;
-      snapFromHero();
-    },
-    { passive: false },
-  );
-
-  window.addEventListener("keydown", (event) => {
-    if (event.defaultPrevented || event.metaKey || event.ctrlKey || event.altKey) return;
-    if (!["ArrowDown", "PageDown", " "].includes(event.key)) return;
-    if (!canSnapFromHero(1)) return;
-    event.preventDefault();
-    snapFromHero();
-  });
-}
-
 const motivationScrollSections = Array.from(
   document.querySelectorAll("[data-motivation-scroll]"),
 );
@@ -101,34 +114,23 @@ motivationScrollSections.forEach((section) => {
   const additions = Array.from(section.querySelectorAll("[data-motivation-addition]"));
   if (!images.length) return;
 
-  let activeIndex = -1;
   let isQueued = false;
 
-  const setActive = (nextIndex) => {
-    if (nextIndex === activeIndex) return;
-    activeIndex = nextIndex;
+  const update = () => {
+    const progress = getScrollProgress(section);
+    const detailProgress = rangeProgress(progress, 0.46, 0.64);
+    section.style.setProperty("--motivation-detail-progress", detailProgress.toFixed(4));
 
     images.forEach((image, index) => {
-      image.classList.toggle("is-active", index === activeIndex);
+      const opacity = index === 0 ? 1 - detailProgress : detailProgress;
+      image.style.opacity = opacity.toFixed(4);
+      image.style.transform = `scale(${(0.985 + opacity * 0.015).toFixed(4)})`;
+      image.setAttribute("aria-hidden", String(opacity < 0.02));
     });
 
-    additions.forEach((addition, index) => {
-      addition.classList.toggle("is-active", activeIndex > index);
+    additions.forEach((addition) => {
+      addition.classList.toggle("is-active", detailProgress > 0.02);
     });
-  };
-
-  const update = () => {
-    const rect = section.getBoundingClientRect();
-    const scrollable = Math.max(1, rect.height - window.innerHeight);
-    const progress = Math.min(1, Math.max(0, -rect.top / scrollable));
-    const holdRatio = 0.72;
-    const nextIndex =
-      images.length === 2
-        ? progress < holdRatio
-          ? 0
-          : 1
-        : Math.min(images.length - 1, Math.floor(progress * images.length));
-    setActive(nextIndex);
   };
 
   const queueUpdate = () => {
@@ -153,42 +155,40 @@ relatedScrollSections.forEach((section) => {
   const prefixes = Array.from(section.querySelectorAll("[data-related-prefix]"));
   if (!images.length) return;
 
-  let activeIndex = -1;
   let isQueued = false;
 
-  const setActive = (nextIndex) => {
-    if (nextIndex === activeIndex) return;
-    activeIndex = nextIndex;
-
-    images.forEach((image, index) => {
-      image.classList.toggle("is-active", index === activeIndex);
+  const update = () => {
+    const progress = getScrollProgress(section);
+    const fadeWindows = [
+      [0.09, 0.17, 0.34, 0.43],
+      [0.34, 0.43, 0.61, 0.7],
+      [0.61, 0.7, 1, 1],
+    ];
+    const weights = images.map((image, index) => {
+      const [enterStart, enterEnd, exitStart, exitEnd] =
+        fadeWindows[index] || [index / images.length, (index + 0.35) / images.length, 1, 1];
+      const enter = rangeProgress(progress, enterStart, enterEnd);
+      const exit = exitStart === 1 ? 1 : 1 - rangeProgress(progress, exitStart, exitEnd);
+      const opacity = enter * exit;
+      image.style.opacity = opacity.toFixed(4);
+      image.style.transform = `translateY(${((1 - opacity) * 16).toFixed(2)}px) scale(${(
+        0.985 + opacity * 0.015
+      ).toFixed(4)})`;
+      image.setAttribute("aria-hidden", String(opacity < 0.02));
+      return opacity;
     });
+    const activeIndex = weights.indexOf(Math.max(...weights));
+    const revealPoints = [0.13, 0.39, 0.66];
 
     steps.forEach((step, index) => {
-      step.classList.toggle("is-visible", index <= activeIndex);
-      step.classList.toggle("is-active", index === activeIndex);
+      const isVisible = progress >= (revealPoints[index] ?? index / images.length);
+      step.classList.toggle("is-visible", isVisible);
+      step.classList.toggle("is-active", isVisible && index === activeIndex);
     });
 
     prefixes.forEach((prefix, index) => {
-      prefix.classList.toggle("is-visible", activeIndex >= index + 1);
+      prefix.classList.toggle("is-visible", progress >= (revealPoints[index + 1] ?? 1));
     });
-  };
-
-  const update = () => {
-    const rect = section.getBoundingClientRect();
-    const scrollable = Math.max(1, rect.height - window.innerHeight);
-    const progress = Math.min(1, Math.max(0, -rect.top / scrollable));
-    const nextIndex =
-      images.length === 3
-        ? progress < 0.22
-          ? -1
-          : progress < 0.46
-            ? 0
-            : progress < 0.84
-              ? 1
-              : 2
-        : Math.min(images.length - 1, Math.floor(progress * images.length));
-    setActive(nextIndex);
   };
 
   const queueUpdate = () => {
@@ -211,12 +211,17 @@ problemScrollSections.forEach((section) => {
   let isQueued = false;
 
   const update = () => {
-    const rect = section.getBoundingClientRect();
-    const scrollable = Math.max(1, rect.height - window.innerHeight);
-    const progress = Math.min(1, Math.max(0, -rect.top / scrollable));
-    section.classList.toggle("is-blocked", progress > 0.35);
-    section.classList.toggle("is-formative", progress > 0.72);
-    section.classList.toggle("is-context-needed", progress > 0.86);
+    const progress = getScrollProgress(section);
+    const blockedProgress = rangeProgress(progress, 0.2, 0.31);
+    const formativeProgress = rangeProgress(progress, 0.49, 0.6);
+    const contextProgress = rangeProgress(progress, 0.73, 0.82);
+
+    section.style.setProperty("--problem-blocked-progress", blockedProgress.toFixed(4));
+    section.style.setProperty("--problem-formative-progress", formativeProgress.toFixed(4));
+    section.style.setProperty("--problem-context-progress", contextProgress.toFixed(4));
+    section.classList.toggle("is-blocked", blockedProgress > 0.5);
+    section.classList.toggle("is-formative", formativeProgress > 0.5);
+    section.classList.toggle("is-context-needed", contextProgress > 0.5);
   };
 
   const queueUpdate = () => {
@@ -312,6 +317,7 @@ keyIdeaQuestions.forEach((section) => {
 const aiUnderstandingSections = Array.from(document.querySelectorAll("[data-ai-understanding]"));
 
 aiUnderstandingSections.forEach((section) => {
+  const row = section.querySelector(".ai-understanding-row");
   const leftVideo = section.querySelector('[data-ai-video="left"]');
   const rightVideo = section.querySelector('[data-ai-video="right"]');
   const videos = [leftVideo, rightVideo].filter(Boolean);
@@ -328,7 +334,7 @@ aiUnderstandingSections.forEach((section) => {
     try {
       video.currentTime = 0;
     } catch {
-      // Metadata may not be ready the first time the section enters view.
+      // Metadata may not be available on the first in-view frame.
     }
     const playPromise = video.play();
     if (playPromise?.catch) playPromise.catch(() => {});
@@ -340,13 +346,13 @@ aiUnderstandingSections.forEach((section) => {
     try {
       video.currentTime = 0;
     } catch {
-      // Metadata may not be ready the first time the section enters view.
+      // Keep the video paused until metadata is available.
     }
   };
 
   const setPhase = (phase) => {
-    section.classList.toggle("is-left-active", phase === "left");
-    section.classList.toggle("is-right-active", phase === "right");
+    row?.classList.toggle("is-left-active", phase === "left");
+    row?.classList.toggle("is-right-active", phase === "right");
 
     if (phase === "left") {
       playVideo(leftVideo);
@@ -362,11 +368,10 @@ aiUnderstandingSections.forEach((section) => {
   const scheduleCycle = () => {
     clearCycleTimers();
     setPhase("idle");
-    cycleTimers.push(window.setTimeout(() => setPhase("left"), 650));
-    cycleTimers.push(window.setTimeout(() => setPhase("right"), 4100));
+    cycleTimers.push(window.setTimeout(() => setPhase("left"), 500));
+    cycleTimers.push(window.setTimeout(() => setPhase("right"), 4000));
     cycleTimers.push(window.setTimeout(() => {
-      if (!isRunning) return;
-      scheduleCycle();
+      if (isRunning) scheduleCycle();
     }, 8500));
   };
 
@@ -388,16 +393,12 @@ aiUnderstandingSections.forEach((section) => {
     const aiObserver = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            startCycle();
-          } else {
-            stopCycle();
-          }
+          if (entry.isIntersecting) startCycle();
+          else stopCycle();
         });
       },
-      { threshold: 0.32 },
+      { threshold: 0.05 },
     );
-
     aiObserver.observe(section);
   } else {
     startCycle();
@@ -444,13 +445,9 @@ const systemOverviewDetails = {
     title: "5. User support",
     copy: "INA reinforces aligned activity or sends a gentle nudge when behavior drifts off-task.",
   },
-  6: {
-    title: "6. User feedback",
-    copy: "Users can mark a message correct or incorrect when INA misunderstands the context.",
-  },
-  7: {
-    title: "7. Refinement",
-    copy: "Feedback is analyzed so future decisions better match the user’s intention.",
+  "6-7": {
+    title: "6-7. User feedback and refinement",
+    copy: "Users can correct INA when it misunderstands the context, and that feedback helps future decisions better match their intention.",
   },
 };
 
@@ -481,7 +478,7 @@ const renderSystemOverviewTitle = (titleElement, titleText) => {
 };
 
 const systemOverviews = Array.from(document.querySelectorAll("[data-system-overview]"));
-const systemOverviewStepOrder = ["overall", "1", "2-3", "4", "5", "6", "7"];
+const systemOverviewStepOrder = ["overall", "1", "2-3", "4", "5", "6-7"];
 
 systemOverviews.forEach((overview) => {
   const overallButton = overview.querySelector("[data-system-overview-overall]");
@@ -493,15 +490,21 @@ systemOverviews.forEach((overview) => {
   const copy = overview.querySelector("[data-system-overview-copy]");
   let currentActiveStep = "overall";
 
-  const setActiveStep = (step) => {
-    const activeStep = step === "2" || step === "3" ? "2-3" : step;
+  const applyActiveStep = (activeStep) => {
     const isOverall = activeStep === "overall";
     const details = systemOverviewDetails[activeStep] || systemOverviewDetails.overall;
     const stepIndex = systemOverviewStepOrder.indexOf(activeStep);
+    const groupedSteps =
+      activeStep === "2-3"
+        ? ["2", "3"]
+        : activeStep === "6-7"
+          ? ["6", "7"]
+          : [activeStep];
 
     currentActiveStep = activeStep;
     overview.setAttribute("data-active-step", activeStep);
     overview.classList.toggle("is-overall", isOverall);
+    if (!isOverall) overview.classList.add("has-viewed-details");
 
     if (overallButton) {
       overallButton.classList.toggle("is-active", isOverall);
@@ -509,21 +512,21 @@ systemOverviews.forEach((overview) => {
     }
 
     if (previousButton) {
-      previousButton.disabled = isOverall || stepIndex <= 0;
+      const isPreviousDisabled = isOverall || stepIndex <= 0;
+      previousButton.disabled = isPreviousDisabled;
+      previousButton.setAttribute("aria-disabled", String(isPreviousDisabled));
     }
 
     if (nextButton) {
-      nextButton.disabled =
+      const isNextDisabled =
         stepIndex === -1 || stepIndex >= systemOverviewStepOrder.length - 1;
+      nextButton.disabled = isNextDisabled;
+      nextButton.setAttribute("aria-disabled", String(isNextDisabled));
     }
 
     buttons.forEach((button) => {
       const buttonStep = button.getAttribute("data-system-overview-step");
-      const isActive =
-        !isOverall &&
-        (activeStep === "2-3"
-          ? buttonStep === "2" || buttonStep === "3"
-          : buttonStep === activeStep);
+      const isActive = !isOverall && groupedSteps.includes(buttonStep);
       button.classList.toggle("is-active", isActive);
       button.setAttribute("aria-pressed", String(isActive));
     });
@@ -532,15 +535,26 @@ systemOverviews.forEach((overview) => {
       const regionStep = region.getAttribute("data-system-overview-region");
       region.classList.toggle(
         "is-active",
-        !isOverall &&
-          (activeStep === "2-3"
-            ? regionStep === "2" || regionStep === "3"
-            : regionStep === activeStep),
+        !isOverall && groupedSteps.includes(regionStep),
       );
     });
 
     if (title) renderSystemOverviewTitle(title, details.title);
     if (copy) copy.textContent = details.copy;
+  };
+
+  const setActiveStep = (step) => {
+    const activeStep =
+      step === "2" || step === "3"
+        ? "2-3"
+        : step === "6" || step === "7"
+          ? "6-7"
+          : step;
+    const isSameStep =
+      activeStep === currentActiveStep && overview.hasAttribute("data-active-step");
+    if (isSameStep) return;
+
+    applyActiveStep(activeStep);
   };
 
   buttons.forEach((button) => {
@@ -596,6 +610,7 @@ const inaDemoSteps = [
 ];
 
 inaDemoSections.forEach((section) => {
+  const scrollContainer = section.closest(".ina-intro-scroll") || section;
   const video = section.querySelector("[data-ina-demo-video]");
   const caption = section.querySelector("[data-ina-step-caption]");
   const number = section.querySelector("[data-ina-step-number]");
@@ -604,9 +619,7 @@ inaDemoSections.forEach((section) => {
 
   let activeIndex = -1;
   let switchTimer = 0;
-  let playTimer = 0;
-  let hasStarted = false;
-  const titleRevealDelay = 2450;
+  let isQueued = false;
 
   const getActiveStepIndex = () => {
     const currentTime = video.currentTime || 0;
@@ -632,58 +645,31 @@ inaDemoSections.forEach((section) => {
 
   const syncStep = () => renderStep(getActiveStepIndex());
 
-  video.addEventListener("loadedmetadata", syncStep);
-  video.addEventListener("timeupdate", syncStep);
-  video.addEventListener("seeked", syncStep);
-  video.pause();
-  syncStep();
-
-  const playVideo = () => {
-    hasStarted = true;
-    section.classList.add("is-demo-playing");
-    video.play().catch(() => {});
-  };
-
-  const scheduleIntroPlay = () => {
-    window.clearTimeout(playTimer);
-    if (hasStarted) {
-      playVideo();
-      return;
-    }
-    try {
-      video.currentTime = 0;
-    } catch {
-      // Ignore browsers that do not allow seeking before metadata is ready.
-    }
-    section.classList.remove("is-demo-playing");
-    syncStep();
-    playTimer = window.setTimeout(playVideo, titleRevealDelay);
-  };
-
-  const pauseIntroPlay = () => {
-    window.clearTimeout(playTimer);
-    section.classList.remove("is-demo-playing");
+  const update = () => {
+    const progress = getScrollProgress(scrollContainer);
+    const titleProgress = rangeProgress(progress, 0.02, 0.16);
+    const videoProgress = rangeProgress(progress, 0.12, 0.92);
+    section.style.setProperty("--ina-title-progress", titleProgress.toFixed(4));
+    section.classList.toggle("is-demo-playing", progress > 0.1);
     video.pause();
+    setVideoProgress(video, videoProgress);
+    syncStep();
   };
 
-  if ("IntersectionObserver" in window) {
-    const inaIntroObserver = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            scheduleIntroPlay();
-          } else {
-            pauseIntroPlay();
-          }
-        });
-      },
-      { rootMargin: "0px 0px -20% 0px", threshold: 0.28 },
-    );
+  const queueUpdate = () => {
+    if (isQueued) return;
+    isQueued = true;
+    window.requestAnimationFrame(() => {
+      isQueued = false;
+      update();
+    });
+  };
 
-    inaIntroObserver.observe(section);
-  } else {
-    scheduleIntroPlay();
-  }
+  video.addEventListener("loadedmetadata", queueUpdate);
+  video.addEventListener("seeked", syncStep);
+  update();
+  window.addEventListener("scroll", queueUpdate, { passive: true });
+  window.addEventListener("resize", queueUpdate);
 });
 
 document.addEventListener("click", (event) => {
@@ -699,6 +685,7 @@ document.addEventListener("click", (event) => {
     if (source && modal && title && body) {
       title.textContent = detailButton.getAttribute("data-detail-title") || "Details";
       body.innerHTML = source.innerHTML;
+      modal.classList.toggle("detail-modal-wide", detailButton.getAttribute("data-detail-variant") === "wide");
 
       if (typeof modal.showModal === "function") {
         modal.showModal();
