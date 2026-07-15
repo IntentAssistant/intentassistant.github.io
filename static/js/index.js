@@ -558,6 +558,7 @@ document.querySelectorAll(".result-finding-sequence").forEach((sequence) => {
   const questionHeader = questionCard?.querySelector(":scope > .result-question-header");
   const resultTitle = resultSection?.querySelector(".section-heading .result-title");
   const isPrimaryResultSequence = questionCard?.classList.contains("result-focus-card");
+  const isUxResultSequence = questionCard?.classList.contains("result-ux-card");
   if (isPrimaryResultSequence) sequence.classList.add("is-primary-result-sequence");
   const stickyStage = document.createElement("div");
   stickyStage.className = "result-finding-sticky";
@@ -648,6 +649,8 @@ document.querySelectorAll(".result-finding-sequence").forEach((sequence) => {
 
   panels.forEach((panel, index) => {
     toplines[index]?.remove();
+    if (isUxResultSequence && index === 0) panel.classList.add("is-ux-intro-panel");
+    if (isUxResultSequence && index === 1) panel.classList.add("is-awaiting-ux-quote-reveal");
     panel.classList.toggle("is-active", index === 0);
     panel.setAttribute("aria-hidden", String(index !== 0));
     panelStack.append(panel);
@@ -671,6 +674,12 @@ document.querySelectorAll(".result-finding-sequence").forEach((sequence) => {
       : 0;
   sequence.style.setProperty("--finding-track-height", `${trackHeight}svh`);
   const titleItems = Array.from(titleStack.querySelectorAll("span"));
+  const uxIntroTitle = isUxResultSequence ? titleItems[0] : null;
+  const uxIntroText = uxIntroTitle?.textContent || "";
+  if (uxIntroTitle) {
+    sequence.classList.add("is-awaiting-ux-intro");
+    uxIntroTitle.textContent = "";
+  }
 
   let activeIndex = 0;
   let isQueued = false;
@@ -703,6 +712,13 @@ document.querySelectorAll(".result-finding-sequence").forEach((sequence) => {
       panel.setAttribute("aria-hidden", String(!isActive));
       titleItems[index]?.classList.toggle("is-active", isActive);
     });
+    const activePanel = panels[activeIndex];
+    if (isUxResultSequence && activePanel?.classList.contains("is-awaiting-ux-quote-reveal")) {
+      window.requestAnimationFrame(() => {
+        activePanel.classList.remove("is-awaiting-ux-quote-reveal");
+        activePanel.classList.add("is-revealing-ux-quotes");
+      });
+    }
     animateResultCounters(panels[activeIndex]);
     updateFixedSubtitle();
   };
@@ -801,6 +817,54 @@ document.querySelectorAll(".result-finding-sequence").forEach((sequence) => {
       introObserver.observe(stickyStage);
     } else {
       runIntro();
+    }
+  }
+
+  if (uxIntroTitle) {
+    let hasStartedUxIntro = false;
+
+    const runUxIntro = () => {
+      if (hasStartedUxIntro) return;
+      hasStartedUxIntro = true;
+      uxIntroTitle.classList.add("is-typing");
+
+      if (reducedMotionQuery.matches) {
+        uxIntroTitle.textContent = uxIntroText;
+        uxIntroTitle.classList.remove("is-typing");
+        sequence.classList.remove("is-awaiting-ux-intro");
+        sequence.classList.add("is-ux-intro-complete");
+        return;
+      }
+
+      let characterIndex = 0;
+      const typeNextCharacter = () => {
+        characterIndex += 1;
+        uxIntroTitle.textContent = uxIntroText.slice(0, characterIndex);
+
+        if (characterIndex < uxIntroText.length) {
+          window.setTimeout(typeNextCharacter, 26);
+        } else {
+          uxIntroTitle.classList.remove("is-typing");
+          sequence.classList.remove("is-awaiting-ux-intro");
+          sequence.classList.add("is-ux-intro-complete");
+        }
+      };
+
+      typeNextCharacter();
+    };
+
+    if ("IntersectionObserver" in window) {
+      const uxIntroObserver = new IntersectionObserver(
+        (entries) => {
+          if (!entries.some((entry) => entry.isIntersecting)) return;
+          uxIntroObserver.disconnect();
+          runUxIntro();
+        },
+        { rootMargin: "0px 0px -16% 0px", threshold: 0.12 },
+      );
+      uxIntroObserver.observe(stickyStage);
+    } else {
+      runUxIntro();
     }
   }
 });
