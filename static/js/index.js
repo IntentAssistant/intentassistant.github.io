@@ -416,6 +416,7 @@ document.querySelectorAll(".result-finding-sequence").forEach((sequence) => {
   const subtitles = panels.map((panel) => panel.getAttribute("data-finding-subtitle") || "");
   const subtitleAlts = panels.map((panel) => panel.getAttribute("data-finding-subtitle-alt") || "");
   const commonButton = toplines.find(Boolean)?.querySelector("[data-detail-toggle]")?.cloneNode(true);
+
   const fixedTopline = document.createElement("div");
   fixedTopline.className = "result-slide-topline result-finding-fixed-topline";
   const fixedTextGroup = document.createElement("div");
@@ -487,6 +488,7 @@ document.querySelectorAll(".result-finding-sequence").forEach((sequence) => {
 
   const detailFooter = document.createElement("div");
   detailFooter.className = "result-finding-detail-footer";
+  if (isPrimaryResultSequence) detailFooter.classList.add("result-finding-detail-footer-primary");
   if (commonButton) detailFooter.append(commonButton);
 
   panels.forEach((panel, index) => {
@@ -503,7 +505,13 @@ document.querySelectorAll(".result-finding-sequence").forEach((sequence) => {
   if (stickyContext.children.length) stickyStage.append(stickyContext);
   stickyStage.append(fixedTopline, panelStack);
   sequence.replaceChildren(stickyStage, scrollTrack);
-  if (detailFooter.children.length) sequence.append(detailFooter);
+  if (detailFooter.children.length) {
+    if (isPrimaryResultSequence) {
+      sequence.after(detailFooter);
+    } else {
+      sequence.append(detailFooter);
+    }
+  }
   sequence.classList.add("is-fade-sequence");
   if (typingTargets.length) sequence.classList.add("is-awaiting-result-intro");
   sequence.style.setProperty("--finding-count", String(panels.length));
@@ -548,15 +556,15 @@ document.querySelectorAll(".result-finding-sequence").forEach((sequence) => {
   const updateActivePanel = () => {
     const rect = sequence.getBoundingClientRect();
     const viewportHeight = Math.max(1, window.innerHeight || document.documentElement.clientHeight);
-    const footerHeight = isPrimaryResultSequence ? detailFooter.offsetHeight : 0;
-    const travelDistance = Math.max(1, rect.height - viewportHeight - footerHeight);
+    const travelDistance = Math.max(1, rect.height - viewportHeight);
     const rawProgress = Math.min(1, Math.max(0, -rect.top / travelDistance));
     const nextIndex = Math.min(panels.length - 1, Math.floor(rawProgress * panels.length));
     setActivePanel(nextIndex);
     if (isPrimaryResultSequence) {
       const isImmersionActive = panels[activeIndex]?.classList.contains("result-finding-slide-immersion");
-      sequence.classList.toggle("is-immersion-blue-visible", isImmersionActive && rawProgress >= 0.78);
-      sequence.classList.toggle("is-immersion-purple-visible", isImmersionActive && rawProgress >= 0.9);
+      const panelProgress = rawProgress * panels.length - activeIndex;
+      sequence.classList.toggle("is-immersion-blue-visible", isImmersionActive && panelProgress >= 0.38);
+      sequence.classList.toggle("is-immersion-purple-visible", isImmersionActive && panelProgress >= 0.72);
       updateFixedSubtitle();
     }
     isQueued = false;
@@ -1275,6 +1283,19 @@ document.addEventListener("click", (event) => {
     responseInput.disabled = true;
     purpleSend.disabled = true;
     appWindow.classList.add("is-ready");
+    return;
+  }
+
+  const surveyOption = event.target.closest(".result-survey-option");
+  if (surveyOption) {
+    const surveyPanel = surveyOption.closest(".result-survey-panel");
+
+    surveyPanel?.querySelectorAll(".result-survey-option").forEach((option) => {
+      const isSelected = option === surveyOption;
+      option.classList.toggle("is-selected", isSelected);
+      option.setAttribute("aria-pressed", String(isSelected));
+    });
+
     return;
   }
 
