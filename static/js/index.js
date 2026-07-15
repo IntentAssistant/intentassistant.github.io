@@ -404,6 +404,7 @@ document.querySelectorAll(".result-finding-sequence").forEach((sequence) => {
   const questionHeader = questionCard?.querySelector(":scope > .result-question-header");
   const resultTitle = resultSection?.querySelector(".section-heading .result-title");
   const isPrimaryResultSequence = questionCard?.classList.contains("result-focus-card");
+  if (isPrimaryResultSequence) sequence.classList.add("is-primary-result-sequence");
   const stickyStage = document.createElement("div");
   stickyStage.className = "result-finding-sticky";
 
@@ -412,9 +413,13 @@ document.querySelectorAll(".result-finding-sequence").forEach((sequence) => {
     const heading = topline?.querySelector("h4");
     return (heading?.textContent || "").replace(/^Findings:\s*/i, "").trim();
   });
+  const subtitles = panels.map((panel) => panel.getAttribute("data-finding-subtitle") || "");
+  const subtitleAlts = panels.map((panel) => panel.getAttribute("data-finding-subtitle-alt") || "");
   const commonButton = toplines.find(Boolean)?.querySelector("[data-detail-toggle]")?.cloneNode(true);
   const fixedTopline = document.createElement("div");
   fixedTopline.className = "result-slide-topline result-finding-fixed-topline";
+  const fixedTextGroup = document.createElement("div");
+  fixedTextGroup.className = "result-finding-fixed-text";
 
   const fixedHeading = document.createElement("h4");
   const fixedLabel = document.createElement("strong");
@@ -430,7 +435,10 @@ document.querySelectorAll(".result-finding-sequence").forEach((sequence) => {
   });
 
   fixedHeading.append(fixedLabel, document.createTextNode(" "), titleStack);
-  fixedTopline.append(fixedHeading);
+  const fixedSubtitle = document.createElement("p");
+  fixedSubtitle.className = "result-finding-fixed-subtitle";
+  fixedTextGroup.append(fixedHeading, fixedSubtitle);
+  fixedTopline.append(fixedTextGroup);
 
   const panelStack = document.createElement("div");
   panelStack.className = "result-finding-panel-stack";
@@ -505,6 +513,23 @@ document.querySelectorAll(".result-finding-sequence").forEach((sequence) => {
   let activeIndex = 0;
   let isQueued = false;
 
+  const updateFixedSubtitle = () => {
+    const activePanel = panels[activeIndex];
+    const isImmersionPanel = activePanel?.classList.contains("result-finding-slide-immersion");
+    let subtitle = "";
+
+    if (isPrimaryResultSequence && isImmersionPanel) {
+      if (sequence.classList.contains("is-immersion-purple-visible")) {
+        subtitle = subtitleAlts[activeIndex] || subtitles[activeIndex] || "";
+      } else if (sequence.classList.contains("is-immersion-blue-visible")) {
+        subtitle = subtitles[activeIndex] || "";
+      }
+    }
+
+    fixedSubtitle.textContent = subtitle;
+    fixedSubtitle.classList.toggle("is-visible", Boolean(subtitle));
+  };
+
   const setActivePanel = (nextIndex) => {
     const clampedIndex = Math.max(0, Math.min(panels.length - 1, nextIndex));
     if (clampedIndex === activeIndex) return;
@@ -517,17 +542,22 @@ document.querySelectorAll(".result-finding-sequence").forEach((sequence) => {
       titleItems[index]?.classList.toggle("is-active", isActive);
     });
     animateResultCounters(panels[activeIndex]);
+    updateFixedSubtitle();
   };
 
   const updateActivePanel = () => {
     const rect = sequence.getBoundingClientRect();
     const viewportHeight = Math.max(1, window.innerHeight || document.documentElement.clientHeight);
-    const travelDistance = Math.max(1, rect.height - viewportHeight);
+    const footerHeight = isPrimaryResultSequence ? detailFooter.offsetHeight : 0;
+    const travelDistance = Math.max(1, rect.height - viewportHeight - footerHeight);
     const rawProgress = Math.min(1, Math.max(0, -rect.top / travelDistance));
     const nextIndex = Math.min(panels.length - 1, Math.floor(rawProgress * panels.length));
     setActivePanel(nextIndex);
     if (isPrimaryResultSequence) {
-      sequence.classList.toggle("is-immersion-quote-visible", rawProgress >= 0.86);
+      const isImmersionActive = panels[activeIndex]?.classList.contains("result-finding-slide-immersion");
+      sequence.classList.toggle("is-immersion-blue-visible", isImmersionActive && rawProgress >= 0.78);
+      sequence.classList.toggle("is-immersion-purple-visible", isImmersionActive && rawProgress >= 0.9);
+      updateFixedSubtitle();
     }
     isQueued = false;
   };
