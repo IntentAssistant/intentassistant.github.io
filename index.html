@@ -46,7 +46,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="static/css/index.css?v=assistant-bridge-flow-134">
+    <link rel="stylesheet" href="static/css/index.css?v=citation-layout-136">
     <script defer src="static/js/fontawesome.all.min.js"></script>
     <script defer src="static/js/index.js?v=intentionbench-result-sequence-44"></script>
   </head>
@@ -1544,24 +1544,24 @@
             <h2>Resources</h2>
           </div>
           <div class="resource-list" aria-label="Project resources">
-            <a href="https://dl.acm.org/doi/10.1145/3772318.3791404" target="_blank" rel="noopener">
-              <span class="resource-button-label"><span class="resource-button-icon" aria-hidden="true"><i class="fas fa-file-alt"></i></span><strong>Paper</strong></span>
+            <a class="resource-card resource-card-paper" href="https://dl.acm.org/doi/10.1145/3772318.3791404" target="_blank" rel="noopener">
+              <span class="resource-button-label"><span class="resource-button-icon" aria-hidden="true"><span class="resource-emoji">📄</span></span><strong>Paper</strong></span>
               <span class="resource-arrow" aria-hidden="true">&nearr;</span>
             </a>
-            <a href="https://github.com/IntentAssistant/INA/tree/main" target="_blank" rel="noopener">
-              <span class="resource-button-label"><span class="resource-button-icon" aria-hidden="true"><i class="fab fa-github"></i></span><strong>Code</strong></span>
+            <a class="resource-card resource-card-code" href="https://github.com/IntentAssistant/INA/tree/main" target="_blank" rel="noopener">
+              <span class="resource-button-label"><span class="resource-button-icon" aria-hidden="true"><span class="resource-emoji">💻</span></span><strong>Code</strong></span>
               <span class="resource-arrow" aria-hidden="true">&nearr;</span>
             </a>
-            <a href="https://huggingface.co/datasets/juheonch/intention_bench" target="_blank" rel="noopener">
-              <span class="resource-button-label"><span class="resource-button-icon" aria-hidden="true"><i class="fas fa-database"></i></span><strong>Dataset</strong></span>
+            <a class="resource-card resource-card-bench" href="https://huggingface.co/datasets/juheonch/intention_bench" target="_blank" rel="noopener">
+              <span class="resource-button-label"><span class="resource-button-icon" aria-hidden="true"><span class="resource-emoji">🤗</span></span><strong>IntentionBench</strong></span>
               <span class="resource-arrow" aria-hidden="true">&nearr;</span>
             </a>
-            <a href="https://github.com/IntentAssistant/INA/releases/download/v1.0.0/IntentAssistant-v1.0.0.dmg" target="_blank" rel="noopener">
-              <span class="resource-button-label"><span class="resource-button-icon" aria-hidden="true"><i class="fas fa-download"></i></span><strong>Download App</strong></span>
+            <a class="resource-card resource-card-download" href="https://github.com/IntentAssistant/INA/releases/download/v1.0.0/IntentAssistant-v1.0.0.dmg" target="_blank" rel="noopener">
+              <span class="resource-button-label"><span class="resource-button-icon" aria-hidden="true"><span class="resource-emoji">📦</span></span><strong>Download App</strong></span>
               <span class="resource-arrow" aria-hidden="true">&darr;</span>
             </a>
-            <a href="https://iing.notion.site/INA-Intent-Assistant-Application-Guide-29b5c593a80880479e92cd106deb868f" target="_blank" rel="noopener">
-              <span class="resource-button-label"><span class="resource-button-icon" aria-hidden="true"><i class="fas fa-book-open"></i></span><strong>Usage Guide</strong></span>
+            <a class="resource-card resource-card-guide" href="https://iing.notion.site/INA-Intent-Assistant-Application-Guide-29b5c593a80880479e92cd106deb868f" target="_blank" rel="noopener">
+              <span class="resource-button-label"><span class="resource-button-icon" aria-hidden="true"><span class="resource-emoji">📘</span></span><strong>Usage Guide</strong></span>
               <span class="resource-arrow" aria-hidden="true">&nearr;</span>
             </a>
           </div>
@@ -1574,6 +1574,9 @@
             <h2>Citation</h2>
           </div>
           <div class="citation-box">
+            <button class="button copy-button" type="button" data-copy="#bibtex">
+              Copy BibTeX
+            </button>
             <pre><code id="bibtex">@inproceedings{choi2026state,
   title = {State Your Intention to Steer Your Attention: An AI Assistant for Intentional Digital Living},
   author = {Choi, Juheon and Lee, Juyong and Kim, Jian and Kim, ChanYoung and Min, Taywon and Knox, W. Bradley and Lee, Min Kyung and Lee, Kimin},
@@ -1581,9 +1584,6 @@
   pages = {1--29},
   year = {2026}
 }</code></pre>
-            <button class="button copy-button" type="button" data-copy="#bibtex">
-              Copy BibTeX
-            </button>
           </div>
         </div>
       </section>
