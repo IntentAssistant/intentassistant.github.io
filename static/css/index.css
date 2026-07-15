@@ -86,6 +86,36 @@ video {
   max-width: 100%;
 }
 
+video {
+  background: #111111;
+}
+
+.media-load-failed {
+  position: relative;
+  min-height: 120px;
+  background: #ededed;
+}
+
+.media-load-failed video {
+  opacity: 0.12;
+}
+
+.media-load-failed::after {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  z-index: 3;
+  padding: 7px 10px;
+  border-radius: 6px;
+  color: #555555;
+  background: rgba(255, 255, 255, 0.92);
+  content: "Media unavailable — check your connection";
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.3;
+  text-align: center;
+  transform: translate(-50%, -50%);
+}
+
 .hero {
   position: relative;
   display: grid;
@@ -9316,41 +9346,26 @@ body:has(.detail-modal[open]) {
 
 .resource-list {
   display: flex;
-  width: fit-content;
-  max-width: 100%;
-  margin-inline: auto;
-  padding: 5px;
-  flex-wrap: nowrap;
-  justify-content: center;
-  gap: 2px;
-  border: 1px solid rgba(0, 0, 0, 0.07);
-  border-radius: 999px;
-  background: rgba(245, 245, 247, 0.88);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
-  overflow-x: auto;
-  scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
-}
-
-.resource-list::-webkit-scrollbar {
-  display: none;
+  flex-wrap: wrap;
+  gap: 12px;
+  border: 0;
+  background: transparent;
 }
 
 .resource-list a {
   display: inline-flex;
   flex: 0 0 auto;
-  min-height: 36px;
-  padding: 8px 14px;
+  min-height: 56px;
+  padding: 0 18px;
   align-items: center;
-  justify-content: center;
-  gap: 0;
+  justify-content: space-between;
+  gap: 12px;
   border: 0;
-  border-radius: 999px;
-  color: #1d1d1f;
-  background: transparent;
+  border-radius: 12px;
+  color: #ffffff;
+  background: #111111;
   white-space: nowrap;
   transition:
-    color 160ms ease,
     background 180ms ease,
     box-shadow 180ms ease,
     transform 180ms ease;
@@ -9358,25 +9373,25 @@ body:has(.detail-modal[open]) {
 
 .resource-list a:hover,
 .resource-list a:focus-visible {
-  color: #0066cc;
-  background: #ffffff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  transform: none;
+  color: #ffffff;
+  background: #2a2a2a;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.16);
+  transform: translateY(-2px);
 }
 
 .resource-list strong {
   color: currentColor;
-  font-size: 14px;
-  font-weight: 650;
+  font-size: clamp(17px, 1.35vw, 20px);
+  font-weight: 800;
   line-height: 1;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
   text-transform: none;
 }
 
 .resource-list .resource-button-label {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
+  gap: 9px;
   color: currentColor;
   font-size: inherit;
   font-weight: inherit;
@@ -9386,16 +9401,18 @@ body:has(.detail-modal[open]) {
 .resource-list .resource-button-icon {
   display: inline-grid;
   position: relative;
-  width: 24px;
-  height: 24px;
+  width: 34px;
+  height: 34px;
   flex: 0 0 auto;
   place-items: center;
-  color: #111111;
-  font-size: 16px;
+  color: currentColor;
+  font-size: 26px;
   font-weight: inherit;
   text-transform: none;
   transform-origin: center;
-  transition: transform 160ms ease;
+  transition:
+    filter 180ms ease,
+    transform 180ms ease;
 }
 
 .resource-emoji-static,
@@ -9414,24 +9431,29 @@ body:has(.detail-modal[open]) {
 
 .resource-emoji-static {
   opacity: 1;
-  transform: scale(0.72);
+  transform: scale(0.86);
 }
 
 .resource-button-icon-github .resource-emoji-static {
-  font-size: 15px;
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #111111;
+  font-size: 21px;
   transform: scale(1);
 }
 
 .resource-button-icon-github .resource-emoji-static svg {
   display: block;
-  width: 15px;
-  height: 15px;
+  width: 21px;
+  height: 21px;
 }
 
 .resource-emoji-animated {
   opacity: 0;
   pointer-events: none;
-  transform: scale(0.58);
+  transform: scale(0.7);
 }
 
 .resource-emoji-animated img {
@@ -9444,25 +9466,31 @@ body:has(.detail-modal[open]) {
 .resource-list a:hover .resource-button-icon,
 .resource-list a:focus-visible .resource-button-icon,
 .resource-list a:active .resource-button-icon {
-  transform: scale(1.08);
+  filter: saturate(1.25) drop-shadow(0 4px 8px rgba(255, 255, 255, 0.16));
+  transform: scale(1.12);
 }
 
 .resource-list a:hover .resource-emoji-static,
 .resource-list a:focus-visible .resource-emoji-static,
 .resource-list a:active .resource-emoji-static {
   opacity: 0;
-  transform: scale(0.44);
+  transform: scale(0.54);
 }
 
 .resource-list a:hover .resource-emoji-animated,
 .resource-list a:focus-visible .resource-emoji-animated,
 .resource-list a:active .resource-emoji-animated {
   opacity: 1;
-  transform: scale(1.12);
+  transform: scale(1.3);
 }
 
 .resource-arrow {
-  display: none;
+  flex: 0 0 auto;
+  color: currentColor;
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 0.8;
+  transition: transform 240ms ease;
 }
 
 .resource-list a:hover .resource-arrow,
@@ -10528,15 +10556,12 @@ code {
   }
 
   .resource-list {
-    width: 100%;
-    justify-content: space-between;
-    gap: 0;
-    padding: 4px;
+    gap: 9px;
   }
 
   .resource-list a {
-    min-height: 36px;
-    padding: 8px clamp(8px, 2.2vw, 12px);
+    min-height: 52px;
+    padding: 0 16px;
   }
 
   .resource-list a:last-child {
@@ -10544,18 +10569,18 @@ code {
   }
 
   .resource-list .resource-button-icon {
-    width: 20px;
-    height: 20px;
-    font-size: 14px;
+    width: 30px;
+    height: 30px;
+    font-size: 23px;
   }
 
   .resource-button-icon-github .resource-emoji-static svg {
-    width: 13px;
-    height: 13px;
+    width: 19px;
+    height: 19px;
   }
 
   .resource-list strong {
-    font-size: 12.5px;
+    font-size: 16px;
   }
 
   .button {

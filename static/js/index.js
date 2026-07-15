@@ -296,16 +296,86 @@ const setVideoProgress = (video, progress) => {
   }
 };
 
+const lazyVideos = Array.from(document.querySelectorAll("video")).filter(
+  (video) => video.dataset.src || video.querySelector("source[data-src]"),
+);
+
+const hydrateVideo = (video) => {
+  if (!video || video.dataset.mediaLoaded === "true") return;
+
+  if (video.dataset.poster) {
+    video.poster = video.dataset.poster;
+  }
+
+  if (video.dataset.src) {
+    video.src = video.dataset.src;
+  }
+
+  video.querySelectorAll("source[data-src]").forEach((source) => {
+    source.src = source.dataset.src;
+  });
+
+  video.dataset.mediaLoaded = "true";
+  video.load();
+};
+
+const setMediaLoadFailed = (video, failed) => {
+  const container =
+    video.closest("[class*='video-frame'], [class*='track-media'], figure") || video.parentElement;
+  container?.classList.toggle("media-load-failed", failed);
+};
+
+lazyVideos.forEach((video) => {
+  video.addEventListener("loadeddata", () => setMediaLoadFailed(video, false), { once: true });
+  video.addEventListener("error", () => setMediaLoadFailed(video, true));
+});
+
+if ("IntersectionObserver" in window && lazyVideos.length) {
+  const lazyVideoObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        hydrateVideo(entry.target);
+        lazyVideoObserver.unobserve(entry.target);
+      });
+    },
+    { rootMargin: "80% 0px", threshold: 0.01 },
+  );
+
+  lazyVideos.forEach((video) => lazyVideoObserver.observe(video));
+} else {
+  lazyVideos.forEach(hydrateVideo);
+}
+
+window.addEventListener("online", () => {
+  lazyVideos.forEach((video) => {
+    if (!video.error || video.dataset.mediaLoaded !== "true") return;
+    setMediaLoadFailed(video, false);
+    video.load();
+  });
+});
+
 const inViewAutoplayVideos = Array.from(
   document.querySelectorAll("video[data-autoplay-in-view]"),
 );
+
+const shouldAvoidAutoplay = () => {
+  const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+  return (
+    reducedMotionQuery.matches ||
+    connection?.saveData === true ||
+    connection?.effectiveType === "slow-2g" ||
+    connection?.effectiveType === "2g"
+  );
+};
 
 if ("IntersectionObserver" in window && inViewAutoplayVideos.length) {
   const autoplayObserver = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
         const video = entry.target;
-        if (entry.isIntersecting && !reducedMotionQuery.matches) {
+        if (entry.isIntersecting && !shouldAvoidAutoplay()) {
+          hydrateVideo(video);
           const playPromise = video.play();
           if (playPromise?.catch) playPromise.catch(() => {});
         } else {
@@ -318,8 +388,9 @@ if ("IntersectionObserver" in window && inViewAutoplayVideos.length) {
 
   inViewAutoplayVideos.forEach((video) => autoplayObserver.observe(video));
   reducedMotionQuery.addEventListener?.("change", () => {
-    if (!reducedMotionQuery.matches) return;
-    inViewAutoplayVideos.forEach((video) => video.pause());
+    if (shouldAvoidAutoplay()) {
+      inViewAutoplayVideos.forEach((video) => video.pause());
+    }
   });
 }
 
@@ -1203,11 +1274,11 @@ const systemOverviewDetails = {
   },
   4: {
     title: "4. Distraction detector",
-    copy: "The LLM compares screenshot content, app metadata, and URLs against the desired goal.",
+    copy: "An LLM-based detector compares screenshot content, app metadata, and URLs against the user's intention: an HCI lecture scores 0.0, while cat Shorts scores 1.0.",
   },
   5: {
     title: "5. User support",
-    copy: "INA reinforces aligned activity or sends a gentle nudge when behavior drifts off-task.",
+    copy: "INA treats scores below 0.5 as on-task, nudges when behavior drifts off-task, and praises users when they return.",
   },
   "6-7": {
     title: "6-7. User feedback and refinement",
