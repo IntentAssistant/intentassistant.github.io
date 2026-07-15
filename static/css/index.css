@@ -9310,12 +9310,13 @@ body:has(.detail-modal[open]) {
 
 .resource-list .resource-button-icon {
   display: inline-grid;
-  width: 30px;
-  height: 30px;
+  position: relative;
+  width: 34px;
+  height: 34px;
   flex: 0 0 auto;
   place-items: center;
   color: currentColor;
-  font-size: 24px;
+  font-size: 26px;
   font-weight: inherit;
   text-transform: none;
   transform-origin: center;
@@ -9324,32 +9325,73 @@ body:has(.detail-modal[open]) {
     transform 180ms ease;
 }
 
-.resource-emoji {
-  display: block;
+.resource-emoji-static,
+.resource-emoji-animated {
+  grid-area: 1 / 1;
+  display: grid;
+  width: 100%;
+  height: 100%;
+  place-items: center;
   line-height: 1;
   transform-origin: 50% 70%;
+  transition:
+    opacity 140ms ease,
+    transform 180ms ease;
+}
+
+.resource-emoji-static {
+  opacity: 1;
+  transform: scale(0.86);
+}
+
+.resource-button-icon-github .resource-emoji-static {
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #111111;
+  font-size: 21px;
+  transform: scale(1);
+}
+
+.resource-button-icon-github .resource-emoji-static svg {
+  display: block;
+  width: 21px;
+  height: 21px;
+}
+
+.resource-emoji-animated {
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.7);
+}
+
+.resource-emoji-animated img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .resource-list a:hover .resource-button-icon,
-.resource-list a:focus-visible .resource-button-icon {
+.resource-list a:focus-visible .resource-button-icon,
+.resource-list a:active .resource-button-icon {
   filter: saturate(1.25) drop-shadow(0 4px 8px rgba(255, 255, 255, 0.16));
   transform: scale(1.12);
 }
 
-.resource-list a:hover .resource-emoji,
-.resource-list a:focus-visible .resource-emoji {
-  animation: resourceIconDance 760ms ease-in-out infinite;
+.resource-list a:hover .resource-emoji-static,
+.resource-list a:focus-visible .resource-emoji-static,
+.resource-list a:active .resource-emoji-static {
+  opacity: 0;
+  transform: scale(0.54);
 }
 
-.resource-card-bench:hover .resource-emoji,
-.resource-card-bench:focus-visible .resource-emoji {
-  animation-name: resourceIconHug;
-}
-
-.resource-button-icon svg {
-  display: block;
-  width: 100%;
-  height: 100%;
+.resource-list a:hover .resource-emoji-animated,
+.resource-list a:focus-visible .resource-emoji-animated,
+.resource-list a:active .resource-emoji-animated {
+  opacity: 1;
+  transform: scale(1.3);
 }
 
 .resource-arrow {
@@ -9364,44 +9406,6 @@ body:has(.detail-modal[open]) {
 .resource-list a:hover .resource-arrow,
 .resource-list a:focus-visible .resource-arrow {
   transform: translate(3px, -3px);
-}
-
-@keyframes resourceIconDance {
-  0%,
-  100% {
-    transform: translateY(0) rotate(0deg) scale(1);
-  }
-
-  25% {
-    transform: translateY(-2px) rotate(-8deg) scale(1.08);
-  }
-
-  50% {
-    transform: translateY(1px) rotate(6deg) scale(1.03);
-  }
-
-  75% {
-    transform: translateY(-1px) rotate(-4deg) scale(1.06);
-  }
-}
-
-@keyframes resourceIconHug {
-  0%,
-  100% {
-    transform: translateY(0) rotate(0deg) scale(1);
-  }
-
-  30% {
-    transform: translateY(-2px) rotate(-7deg) scale(1.12);
-  }
-
-  58% {
-    transform: translateY(0) rotate(7deg) scale(1.08);
-  }
-
-  82% {
-    transform: translateY(-1px) rotate(0deg) scale(1.14);
-  }
 }
 
 .resource-section .section-heading {
