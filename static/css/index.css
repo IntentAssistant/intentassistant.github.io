@@ -2034,24 +2034,85 @@ section[id] {
 
 .paper-link-icon {
   display: inline-grid;
-  width: 14px;
-  height: 14px;
+  position: relative;
+  width: 24px;
+  height: 24px;
   margin-right: 7px;
   flex: 0 0 auto;
   place-items: center;
-  font-size: 13px;
+  color: #111111;
+  font-size: 16px;
+  transform-origin: center;
+  transition: transform 160ms ease;
+}
+
+.paper-link-icon-static,
+.paper-link-icon-animated {
+  grid-area: 1 / 1;
+  display: grid;
+  width: 100%;
+  height: 100%;
+  place-items: center;
+  line-height: 1;
+  transform-origin: 50% 70%;
+  transition:
+    opacity 140ms ease,
+    transform 180ms ease;
+}
+
+.paper-link-icon-static {
+  opacity: 1;
+  transform: scale(0.72);
+}
+
+.paper-link-icon-animated {
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.58);
+}
+
+.paper-link-icon-animated img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .paper-link-icon svg {
   display: block;
-  width: 100%;
-  height: 100%;
+  width: 15px;
+  height: 15px;
+}
+
+.paper-link-icon-github .paper-link-icon-static {
+  font-size: 15px;
+  transform: scale(1);
 }
 
 .paper-links a:hover {
   color: #0066cc;
   background: #ffffff;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.paper-links a:hover .paper-link-icon,
+.paper-links a:focus-visible .paper-link-icon,
+.paper-links a:active .paper-link-icon {
+  transform: scale(1.08);
+}
+
+.paper-links a:hover .paper-link-icon-static,
+.paper-links a:focus-visible .paper-link-icon-static,
+.paper-links a:active .paper-link-icon-static {
+  opacity: 0;
+  transform: scale(0.44);
+}
+
+.paper-links a:hover .paper-link-icon-animated,
+.paper-links a:focus-visible .paper-link-icon-animated,
+.paper-links a:active .paper-link-icon-animated {
+  opacity: 1;
+  transform: scale(1.12);
 }
 
 .resource-list a:hover {
@@ -4330,8 +4391,7 @@ section[id] {
 }
 
 .chart-header span,
-.result-card span,
-.resource-list span {
+.result-card span {
   color: #333333;
   font-size: 13px;
   font-weight: 900;
@@ -9256,26 +9316,41 @@ body:has(.detail-modal[open]) {
 
 .resource-list {
   display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  border: 0;
-  background: transparent;
+  width: fit-content;
+  max-width: 100%;
+  margin-inline: auto;
+  padding: 5px;
+  flex-wrap: nowrap;
+  justify-content: center;
+  gap: 2px;
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  border-radius: 999px;
+  background: rgba(245, 245, 247, 0.88);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.resource-list::-webkit-scrollbar {
+  display: none;
 }
 
 .resource-list a {
   display: inline-flex;
   flex: 0 0 auto;
-  min-height: 56px;
-  padding: 0 18px;
+  min-height: 36px;
+  padding: 8px 14px;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+  justify-content: center;
+  gap: 0;
   border: 0;
-  border-radius: 12px;
-  color: #ffffff;
-  background: #111111;
+  border-radius: 999px;
+  color: #1d1d1f;
+  background: transparent;
   white-space: nowrap;
   transition:
+    color 160ms ease,
     background 180ms ease,
     box-shadow 180ms ease,
     transform 180ms ease;
@@ -9283,25 +9358,25 @@ body:has(.detail-modal[open]) {
 
 .resource-list a:hover,
 .resource-list a:focus-visible {
-  color: #ffffff;
-  background: #2a2a2a;
-  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.16);
-  transform: translateY(-2px);
+  color: #0066cc;
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transform: none;
 }
 
 .resource-list strong {
   color: currentColor;
-  font-size: clamp(17px, 1.35vw, 20px);
-  font-weight: 800;
+  font-size: 14px;
+  font-weight: 650;
   line-height: 1;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
   text-transform: none;
 }
 
 .resource-list .resource-button-label {
   display: inline-flex;
   align-items: center;
-  gap: 9px;
+  gap: 7px;
   color: currentColor;
   font-size: inherit;
   font-weight: inherit;
@@ -9311,18 +9386,16 @@ body:has(.detail-modal[open]) {
 .resource-list .resource-button-icon {
   display: inline-grid;
   position: relative;
-  width: 34px;
-  height: 34px;
+  width: 24px;
+  height: 24px;
   flex: 0 0 auto;
   place-items: center;
-  color: currentColor;
-  font-size: 26px;
+  color: #111111;
+  font-size: 16px;
   font-weight: inherit;
   text-transform: none;
   transform-origin: center;
-  transition:
-    filter 180ms ease,
-    transform 180ms ease;
+  transition: transform 160ms ease;
 }
 
 .resource-emoji-static,
@@ -9341,29 +9414,24 @@ body:has(.detail-modal[open]) {
 
 .resource-emoji-static {
   opacity: 1;
-  transform: scale(0.86);
+  transform: scale(0.72);
 }
 
 .resource-button-icon-github .resource-emoji-static {
-  width: 30px;
-  height: 30px;
-  border-radius: 999px;
-  background: #ffffff;
-  color: #111111;
-  font-size: 21px;
+  font-size: 15px;
   transform: scale(1);
 }
 
 .resource-button-icon-github .resource-emoji-static svg {
   display: block;
-  width: 21px;
-  height: 21px;
+  width: 15px;
+  height: 15px;
 }
 
 .resource-emoji-animated {
   opacity: 0;
   pointer-events: none;
-  transform: scale(0.7);
+  transform: scale(0.58);
 }
 
 .resource-emoji-animated img {
@@ -9376,31 +9444,25 @@ body:has(.detail-modal[open]) {
 .resource-list a:hover .resource-button-icon,
 .resource-list a:focus-visible .resource-button-icon,
 .resource-list a:active .resource-button-icon {
-  filter: saturate(1.25) drop-shadow(0 4px 8px rgba(255, 255, 255, 0.16));
-  transform: scale(1.12);
+  transform: scale(1.08);
 }
 
 .resource-list a:hover .resource-emoji-static,
 .resource-list a:focus-visible .resource-emoji-static,
 .resource-list a:active .resource-emoji-static {
   opacity: 0;
-  transform: scale(0.54);
+  transform: scale(0.44);
 }
 
 .resource-list a:hover .resource-emoji-animated,
 .resource-list a:focus-visible .resource-emoji-animated,
 .resource-list a:active .resource-emoji-animated {
   opacity: 1;
-  transform: scale(1.3);
+  transform: scale(1.12);
 }
 
 .resource-arrow {
-  flex: 0 0 auto;
-  color: currentColor;
-  font-size: 19px;
-  font-weight: 700;
-  line-height: 0.8;
-  transition: transform 240ms ease;
+  display: none;
 }
 
 .resource-list a:hover .resource-arrow,
@@ -10453,21 +10515,47 @@ code {
     font-size: 12.5px;
   }
 
+  .paper-link-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+    font-size: 14px;
+  }
+
+  .paper-link-icon svg {
+    width: 13px;
+    height: 13px;
+  }
+
   .resource-list {
-    gap: 9px;
+    width: 100%;
+    justify-content: space-between;
+    gap: 0;
+    padding: 4px;
   }
 
   .resource-list a {
-    min-height: 52px;
-    padding: 0 16px;
+    min-height: 36px;
+    padding: 8px clamp(8px, 2.2vw, 12px);
   }
 
   .resource-list a:last-child {
     grid-column: auto;
   }
 
+  .resource-list .resource-button-icon {
+    width: 20px;
+    height: 20px;
+    font-size: 14px;
+  }
+
+  .resource-button-icon-github .resource-emoji-static svg {
+    width: 13px;
+    height: 13px;
+  }
+
   .resource-list strong {
-    font-size: 16px;
+    font-size: 12.5px;
   }
 
   .button {
