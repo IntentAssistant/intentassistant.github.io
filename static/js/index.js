@@ -35,6 +35,246 @@ if (animatedPaperTitle && animatedPaperTitleText) {
   }
 }
 
+document.querySelectorAll("[data-study-system-carousel]").forEach((carousel) => {
+  const slides = Array.from(carousel.querySelectorAll("[data-study-system-slide]"));
+  const viewport = carousel.querySelector("[data-study-system-viewport]");
+  const track = carousel.querySelector(".study-system-grid");
+  const previousButton = carousel.querySelector("[data-study-carousel-prev]");
+  const nextButton = carousel.querySelector("[data-study-carousel-next]");
+  const dots = Array.from(carousel.querySelectorAll("[data-study-carousel-dot]"));
+  let activeIndex = 0;
+  let pointerStartX = null;
+  let pointerStartTime = 0;
+  let dragStartTrackX = 0;
+  let currentTrackX = 0;
+  let isDragging = false;
+  let suppressClick = false;
+
+  const setTrackPosition = (nextTrackX) => {
+    if (!track) return;
+    currentTrackX = nextTrackX;
+    track.style.transform = `translate3d(${nextTrackX}px, 0, 0)`;
+  };
+
+  const positionTrack = (animate = true) => {
+    if (!viewport || !track || !slides[activeIndex]) return;
+
+    if (!animate) track.classList.add("is-immediate");
+
+    const activeSlide = slides[activeIndex];
+    const centeredOffset = activeSlide.offsetLeft - (viewport.clientWidth - activeSlide.offsetWidth) / 2;
+    setTrackPosition(-centeredOffset);
+
+    if (!animate) {
+      window.requestAnimationFrame(() => track.classList.remove("is-immediate"));
+    }
+  };
+
+  const showSlide = (nextIndex, animate = true) => {
+    activeIndex = Math.min(slides.length - 1, Math.max(0, nextIndex));
+
+    slides.forEach((slide, index) => {
+      slide.classList.toggle("is-active", index === activeIndex);
+      slide.classList.toggle("is-before", index < activeIndex);
+      slide.setAttribute("aria-hidden", String(index !== activeIndex));
+    });
+
+    dots.forEach((dot, index) => {
+      const isActive = index === activeIndex;
+      dot.classList.toggle("is-active", isActive);
+      if (isActive) {
+        dot.setAttribute("aria-current", "true");
+      } else {
+        dot.removeAttribute("aria-current");
+      }
+    });
+
+    if (previousButton) previousButton.disabled = activeIndex === 0;
+    if (nextButton) nextButton.disabled = activeIndex === slides.length - 1;
+
+    window.requestAnimationFrame(() => positionTrack(animate));
+  };
+
+  previousButton?.addEventListener("click", () => showSlide(activeIndex - 1));
+  nextButton?.addEventListener("click", () => showSlide(activeIndex + 1));
+  dots.forEach((dot) => {
+    dot.addEventListener("click", () => showSlide(Number(dot.getAttribute("data-study-carousel-dot"))));
+  });
+
+  viewport?.addEventListener("pointerdown", (event) => {
+    if (!event.isPrimary) return;
+    if (
+      event.target instanceof Element &&
+      event.target.closest("button, input, textarea, select, a, label, [contenteditable='true']")
+    ) {
+      return;
+    }
+    pointerStartX = event.clientX;
+    pointerStartTime = performance.now();
+    dragStartTrackX = currentTrackX;
+    isDragging = false;
+  });
+
+  viewport?.addEventListener("pointermove", (event) => {
+    if (pointerStartX === null || !event.isPrimary) return;
+    const distance = event.clientX - pointerStartX;
+
+    if (!isDragging && Math.abs(distance) < 5) return;
+
+    isDragging = true;
+    if (!viewport.hasPointerCapture?.(event.pointerId)) {
+      viewport.setPointerCapture?.(event.pointerId);
+    }
+    track?.classList.add("is-dragging");
+    viewport.classList.add("is-dragging");
+
+    const isPullingPastFirst = activeIndex === 0 && distance > 0;
+    const isPullingPastLast = activeIndex === slides.length - 1 && distance < 0;
+    const resistedDistance = isPullingPastFirst || isPullingPastLast ? distance * 0.34 : distance;
+    setTrackPosition(dragStartTrackX + resistedDistance);
+    event.preventDefault();
+  });
+
+  const finishPointerDrag = (event, cancelled = false) => {
+    if (pointerStartX === null || !event.isPrimary) return;
+
+    const distance = event.clientX - pointerStartX;
+    const elapsed = Math.max(1, performance.now() - pointerStartTime);
+    const velocity = distance / elapsed;
+    const completedDrag = isDragging;
+
+    pointerStartX = null;
+    isDragging = false;
+    track?.classList.remove("is-dragging");
+    viewport.classList.remove("is-dragging");
+
+    if (viewport.hasPointerCapture?.(event.pointerId)) {
+      viewport.releasePointerCapture(event.pointerId);
+    }
+
+    if (!completedDrag) return;
+
+    suppressClick = true;
+    window.setTimeout(() => {
+      suppressClick = false;
+    }, 0);
+
+    if (cancelled) {
+      positionTrack(true);
+      return;
+    }
+
+    const distanceThreshold = Math.min(76, viewport.clientWidth * 0.14);
+    const shouldAdvance = Math.abs(distance) >= distanceThreshold || Math.abs(velocity) > 0.48;
+
+    if (shouldAdvance) {
+      showSlide(distance < 0 ? activeIndex + 1 : activeIndex - 1);
+    } else {
+      positionTrack(true);
+    }
+  };
+
+  viewport?.addEventListener("pointerup", (event) => finishPointerDrag(event));
+
+  viewport?.addEventListener("pointercancel", (event) => finishPointerDrag(event, true));
+
+  viewport?.addEventListener(
+    "click",
+    (event) => {
+      if (!suppressClick) return;
+      event.preventDefault();
+      event.stopPropagation();
+    },
+    true,
+  );
+
+  viewport?.addEventListener("keydown", (event) => {
+    if (event.key === "ArrowLeft") {
+      event.preventDefault();
+      showSlide(activeIndex - 1);
+    }
+    if (event.key === "ArrowRight") {
+      event.preventDefault();
+      showSlide(activeIndex + 1);
+    }
+  });
+
+  if (viewport && "ResizeObserver" in window) {
+    const resizeObserver = new ResizeObserver(() => positionTrack(false));
+    resizeObserver.observe(viewport);
+  } else {
+    window.addEventListener("resize", () => positionTrack(false));
+  }
+
+  document.fonts?.ready.then(() => positionTrack(false));
+  showSlide(0, false);
+});
+
+const purpleMessageTimers = new WeakMap();
+const purpleMessages = [
+  { text: "You're watching HCI lectures! Keep going.", offTask: false },
+  { text: "I see you're chatting about pizza. Maybe focus on HCI study topics?", offTask: true },
+  { text: "Looks like a good lecture!", offTask: false },
+];
+
+const stopPurpleMessages = (appWindow) => {
+  const timer = purpleMessageTimers.get(appWindow);
+  if (timer) window.clearInterval(timer);
+  purpleMessageTimers.delete(appWindow);
+};
+
+const startPurpleMessages = (appWindow) => {
+  const message = appWindow.querySelector("[data-purple-message]");
+  if (!message) return;
+
+  stopPurpleMessages(appWindow);
+  let messageIndex = 0;
+
+  const renderMessage = () => {
+    const state = purpleMessages[messageIndex];
+    message.textContent = state.text;
+    message.classList.toggle("is-off-task", state.offTask);
+    message.classList.toggle("is-on-task", !state.offTask);
+    messageIndex = (messageIndex + 1) % purpleMessages.length;
+  };
+
+  renderMessage();
+  purpleMessageTimers.set(appWindow, window.setInterval(renderMessage, 2600));
+};
+
+const resetInteractiveStudyApp = (appWindow) => {
+  stopPurpleMessages(appWindow);
+  appWindow.classList.remove("is-running", "is-clarifying", "is-monitoring", "is-survey");
+
+  const toggle = appWindow.querySelector("[data-simple-reminder-toggle], [data-purple-toggle]");
+  if (toggle) {
+    toggle.disabled = false;
+    toggle.classList.remove("is-running");
+    toggle.textContent = "Start";
+    toggle.setAttribute("aria-pressed", "false");
+  }
+
+  appWindow.querySelectorAll('.study-alignment-survey input[type="radio"]').forEach((input) => {
+    input.checked = false;
+  });
+
+  const purpleResponse = appWindow.querySelector("[data-purple-response]");
+  const purpleSend = appWindow.querySelector("[data-purple-send]");
+  const purpleUserResponse = appWindow.querySelector("[data-purple-user-response]");
+  const purpleReadyMessage = appWindow.querySelector("[data-purple-ready-message]");
+  if (purpleResponse) {
+    purpleResponse.disabled = false;
+    purpleResponse.value = "";
+  }
+  if (purpleSend) purpleSend.disabled = false;
+  if (purpleUserResponse) {
+    purpleUserResponse.hidden = true;
+    purpleUserResponse.textContent = "";
+  }
+  if (purpleReadyMessage) purpleReadyMessage.hidden = true;
+  appWindow.classList.remove("is-ready");
+};
+
 const clamp01 = (value) => Math.min(1, Math.max(0, value));
 const rangeProgress = (progress, start, end) => {
   const value = clamp01((progress - start) / Math.max(0.0001, end - start));
@@ -104,6 +344,262 @@ if ("IntersectionObserver" in window && animatedElements.length) {
 } else {
   animatedElements.forEach((element) => element.classList.add("is-visible"));
 }
+
+const formatAnimatedCount = (value, decimals, suffix) => {
+  const formattedValue = Number(value).toFixed(decimals);
+  return suffix ? `${formattedValue}<em>${suffix}</em>` : formattedValue;
+};
+
+const animateResultCounters = (scope) => {
+  const counters = Array.from(scope.querySelectorAll("[data-result-count]"));
+  if (!counters.length) return;
+
+  counters.forEach((counter) => {
+    const start = Number(counter.getAttribute("data-result-count-start") || "0");
+    const end = Number(counter.getAttribute("data-result-count-end") || counter.textContent || "0");
+    const decimals = Number(counter.getAttribute("data-result-count-decimals") || "0");
+    const suffix = counter.getAttribute("data-result-count-suffix") || "";
+    const delay = Number(counter.getAttribute("data-result-count-delay") || "0");
+    const duration = Number(counter.getAttribute("data-result-count-duration") || "1200");
+
+    window.clearTimeout(Number(counter.dataset.resultCountTimer || "0"));
+    counter.innerHTML = formatAnimatedCount(start, decimals, suffix);
+
+    if (reducedMotionQuery.matches) {
+      counter.innerHTML = formatAnimatedCount(end, decimals, suffix);
+      return;
+    }
+
+    const timer = window.setTimeout(() => {
+      const startTime = performance.now();
+
+      const tick = (now) => {
+        const progress = Math.min(1, (now - startTime) / duration);
+        const easedProgress = 1 - Math.pow(1 - progress, 3);
+        const currentValue = start + (end - start) * easedProgress;
+        counter.innerHTML = formatAnimatedCount(currentValue, decimals, suffix);
+
+        if (progress < 1) {
+          window.requestAnimationFrame(tick);
+        } else {
+          counter.innerHTML = formatAnimatedCount(end, decimals, suffix);
+        }
+      };
+
+      window.requestAnimationFrame(tick);
+    }, delay);
+
+    counter.dataset.resultCountTimer = String(timer);
+  });
+};
+
+document.querySelectorAll(".result-finding-sequence").forEach((sequence) => {
+  const steps = Array.from(sequence.querySelectorAll(":scope > .result-finding-step"));
+  const panels = steps.map((step) => step.querySelector(".result-finding-slide")).filter(Boolean);
+
+  if (!panels.length) return;
+
+  const questionCard = sequence.closest(".result-question-card");
+  const resultSection = sequence.closest(".result-section");
+  const questionHeader = questionCard?.querySelector(":scope > .result-question-header");
+  const resultTitle = resultSection?.querySelector(".section-heading .result-title");
+  const isPrimaryResultSequence = questionCard?.classList.contains("result-focus-card");
+  const stickyStage = document.createElement("div");
+  stickyStage.className = "result-finding-sticky";
+
+  const toplines = panels.map((panel) => panel.querySelector(":scope > .result-slide-topline"));
+  const titles = toplines.map((topline) => {
+    const heading = topline?.querySelector("h4");
+    return (heading?.textContent || "").replace(/^Findings:\s*/i, "").trim();
+  });
+  const commonButton = toplines.find(Boolean)?.querySelector("[data-detail-toggle]")?.cloneNode(true);
+  const fixedTopline = document.createElement("div");
+  fixedTopline.className = "result-slide-topline result-finding-fixed-topline";
+
+  const fixedHeading = document.createElement("h4");
+  const fixedLabel = document.createElement("strong");
+  fixedLabel.textContent = "Findings:";
+  const titleStack = document.createElement("span");
+  titleStack.className = "result-finding-title-stack";
+
+  titles.forEach((title, index) => {
+    const titleItem = document.createElement("span");
+    titleItem.textContent = title;
+    titleItem.classList.toggle("is-active", index === 0);
+    titleStack.append(titleItem);
+  });
+
+  fixedHeading.append(fixedLabel, document.createTextNode(" "), titleStack);
+  fixedTopline.append(fixedHeading);
+
+  const panelStack = document.createElement("div");
+  panelStack.className = "result-finding-panel-stack";
+
+  const stickyContext = document.createElement("div");
+  stickyContext.className = "result-sticky-context";
+  const typingTargets = [];
+
+  if (isPrimaryResultSequence && resultTitle) {
+    const stickyTitle = resultTitle.cloneNode(true);
+    stickyTitle.classList.add("result-sticky-title");
+    stickyContext.append(stickyTitle);
+    resultSection?.classList.add("is-results-scrolly");
+  }
+
+  if (questionHeader) {
+    const stickyQuestion = questionHeader.cloneNode(true);
+    stickyQuestion.classList.add("result-sticky-question");
+    if (isPrimaryResultSequence) {
+      stickyQuestion.classList.add("result-sticky-question-typing");
+      const questionLabel = stickyQuestion.querySelector("span");
+      const questionText = stickyQuestion.querySelector("h3");
+
+      if (questionLabel && questionText) {
+        typingTargets.push({
+          element: questionLabel,
+          speed: 120,
+          text: questionLabel.textContent.trim(),
+        });
+        typingTargets.push({
+          element: questionText,
+          speed: 32,
+          text: questionText.textContent.trim(),
+        });
+        questionLabel.textContent = "";
+        questionText.textContent = "";
+      }
+    }
+    stickyContext.append(stickyQuestion);
+    questionCard?.classList.add("is-scrolly-enhanced");
+  }
+
+  const scrollTrack = document.createElement("div");
+  scrollTrack.className = "result-finding-scroll-track";
+  scrollTrack.setAttribute("aria-hidden", "true");
+
+  const detailFooter = document.createElement("div");
+  detailFooter.className = "result-finding-detail-footer";
+  if (commonButton) detailFooter.append(commonButton);
+
+  panels.forEach((panel, index) => {
+    toplines[index]?.remove();
+    panel.classList.toggle("is-active", index === 0);
+    panel.setAttribute("aria-hidden", String(index !== 0));
+    panelStack.append(panel);
+
+    const marker = document.createElement("span");
+    marker.className = "result-finding-scroll-marker";
+    scrollTrack.append(marker);
+  });
+
+  if (stickyContext.children.length) stickyStage.append(stickyContext);
+  stickyStage.append(fixedTopline, panelStack);
+  sequence.replaceChildren(stickyStage, scrollTrack);
+  if (detailFooter.children.length) sequence.append(detailFooter);
+  sequence.classList.add("is-fade-sequence");
+  if (typingTargets.length) sequence.classList.add("is-awaiting-result-intro");
+  sequence.style.setProperty("--finding-count", String(panels.length));
+  sequence.style.setProperty("--finding-track-height", `${Math.max(0, panels.length - 1) * 82}svh`);
+  const titleItems = Array.from(titleStack.querySelectorAll("span"));
+
+  let activeIndex = 0;
+  let isQueued = false;
+
+  const setActivePanel = (nextIndex) => {
+    const clampedIndex = Math.max(0, Math.min(panels.length - 1, nextIndex));
+    if (clampedIndex === activeIndex) return;
+
+    activeIndex = clampedIndex;
+    panels.forEach((panel, index) => {
+      const isActive = index === activeIndex;
+      panel.classList.toggle("is-active", isActive);
+      panel.setAttribute("aria-hidden", String(!isActive));
+      titleItems[index]?.classList.toggle("is-active", isActive);
+    });
+    animateResultCounters(panels[activeIndex]);
+  };
+
+  const updateActivePanel = () => {
+    const rect = sequence.getBoundingClientRect();
+    const viewportHeight = Math.max(1, window.innerHeight || document.documentElement.clientHeight);
+    const travelDistance = Math.max(1, rect.height - viewportHeight);
+    const rawProgress = Math.min(1, Math.max(0, -rect.top / travelDistance));
+    const nextIndex = Math.min(panels.length - 1, Math.floor(rawProgress * panels.length));
+    setActivePanel(nextIndex);
+    isQueued = false;
+  };
+
+  const queueUpdate = () => {
+    if (isQueued) return;
+    isQueued = true;
+    window.requestAnimationFrame(updateActivePanel);
+  };
+
+  window.addEventListener("scroll", queueUpdate, { passive: true });
+  window.addEventListener("resize", queueUpdate);
+  updateActivePanel();
+
+  if (typingTargets.length) {
+    let hasStartedIntro = false;
+
+    const wait = (delay) => new Promise((resolve) => window.setTimeout(resolve, delay));
+    const typeText = (target) =>
+      new Promise((resolve) => {
+        target.element.textContent = "";
+        target.element.classList.add("is-typing");
+
+        if (reducedMotionQuery.matches) {
+          target.element.textContent = target.text;
+          target.element.classList.remove("is-typing");
+          resolve();
+          return;
+        }
+
+        let characterIndex = 0;
+        const writeNextCharacter = () => {
+          characterIndex += 1;
+          target.element.textContent = target.text.slice(0, characterIndex);
+
+          if (characterIndex < target.text.length) {
+            window.setTimeout(writeNextCharacter, target.speed);
+          } else {
+            target.element.classList.remove("is-typing");
+            resolve();
+          }
+        };
+
+        writeNextCharacter();
+      });
+
+    const runIntro = async () => {
+      if (hasStartedIntro) return;
+      hasStartedIntro = true;
+      sequence.classList.add("is-result-intro-running");
+
+      for (const target of typingTargets) {
+        await typeText(target);
+        await wait(target.element.tagName.toLowerCase() === "span" ? 160 : 260);
+      }
+
+      sequence.classList.remove("is-awaiting-result-intro");
+      sequence.classList.add("is-result-intro-complete");
+    };
+
+    if ("IntersectionObserver" in window) {
+      const introObserver = new IntersectionObserver(
+        (entries) => {
+          if (!entries.some((entry) => entry.isIntersecting)) return;
+          introObserver.disconnect();
+          runIntro();
+        },
+        { rootMargin: "0px 0px -18% 0px", threshold: 0.08 },
+      );
+      introObserver.observe(stickyStage);
+    } else {
+      runIntro();
+    }
+  }
+});
 
 const motivationScrollSections = Array.from(
   document.querySelectorAll("[data-motivation-scroll]"),
@@ -675,23 +1171,114 @@ inaDemoSections.forEach((section) => {
 document.addEventListener("click", (event) => {
   if (!(event.target instanceof Element)) return;
 
+  const studySessionToggle = event.target.closest("[data-study-session-toggle]");
+  if (studySessionToggle) {
+    const isRunning = studySessionToggle.classList.toggle("is-running");
+    studySessionToggle.textContent = isRunning ? "Stop" : "Start";
+    studySessionToggle.setAttribute("aria-pressed", String(isRunning));
+    return;
+  }
+
+  const simpleReminderToggle = event.target.closest("[data-simple-reminder-toggle]");
+  if (simpleReminderToggle) {
+    const appWindow = simpleReminderToggle.closest(".study-app-window");
+    if (!appWindow || appWindow.classList.contains("is-survey")) return;
+
+    if (appWindow.classList.contains("is-running")) {
+      appWindow.classList.remove("is-running");
+      appWindow.classList.add("is-survey");
+      simpleReminderToggle.disabled = true;
+    } else {
+      appWindow.classList.add("is-running");
+      simpleReminderToggle.classList.add("is-running");
+      simpleReminderToggle.textContent = "Stop";
+      simpleReminderToggle.setAttribute("aria-pressed", "true");
+    }
+    return;
+  }
+
+  const purpleToggle = event.target.closest("[data-purple-toggle]");
+  if (purpleToggle) {
+    const appWindow = purpleToggle.closest(".study-app-purple");
+    if (!appWindow || appWindow.classList.contains("is-survey")) return;
+
+    if (appWindow.classList.contains("is-monitoring")) {
+      stopPurpleMessages(appWindow);
+      appWindow.classList.remove("is-monitoring");
+      appWindow.classList.add("is-survey");
+      purpleToggle.disabled = true;
+      return;
+    }
+
+    if (appWindow.classList.contains("is-clarifying") && appWindow.classList.contains("is-ready")) {
+      appWindow.classList.remove("is-clarifying", "is-ready");
+      appWindow.classList.add("is-monitoring");
+      purpleToggle.classList.add("is-running");
+      purpleToggle.textContent = "Stop";
+      purpleToggle.setAttribute("aria-pressed", "true");
+      startPurpleMessages(appWindow);
+      return;
+    }
+
+    if (!appWindow.classList.contains("is-clarifying")) {
+      appWindow.classList.add("is-clarifying");
+    }
+    return;
+  }
+
+  const purpleSend = event.target.closest("[data-purple-send]");
+  if (purpleSend) {
+    const appWindow = purpleSend.closest(".study-app-purple");
+    const responseInput = appWindow?.querySelector("[data-purple-response]");
+    const userResponse = appWindow?.querySelector("[data-purple-user-response]");
+    const readyMessage = appWindow?.querySelector("[data-purple-ready-message]");
+    const response = responseInput?.value.trim() || "";
+    if (!appWindow || !responseInput || !userResponse || !readyMessage || !response) return;
+
+    userResponse.textContent = response;
+    userResponse.hidden = false;
+    readyMessage.hidden = false;
+    responseInput.value = "Clarification completed";
+    responseInput.disabled = true;
+    purpleSend.disabled = true;
+    appWindow.classList.add("is-ready");
+    return;
+  }
+
   const detailButton = event.target.closest("[data-detail-toggle]");
   if (detailButton) {
-    const source = document.querySelector(detailButton.getAttribute("data-detail-toggle"));
+    const sourceSelector = detailButton.getAttribute("data-detail-toggle");
+    const sources = sourceSelector ? Array.from(document.querySelectorAll(sourceSelector)) : [];
     const modal = document.querySelector("#detail-modal");
     const title = modal?.querySelector("#detail-modal-title");
     const body = modal?.querySelector("[data-detail-modal-body]");
 
-    if (source && modal && title && body) {
+    if (sources.length && modal && title && body) {
       title.textContent = detailButton.getAttribute("data-detail-title") || "Details";
-      body.innerHTML = source.innerHTML;
+      body.innerHTML = sources.map((source) => source.innerHTML).join("");
       modal.classList.toggle("detail-modal-wide", detailButton.getAttribute("data-detail-variant") === "wide");
+
+      const replayDetailAnimations = () => {
+        const animatedFigures = Array.from(
+          body.querySelectorAll(".paper-svg-figure, .paper-figure, .bench-table-figure"),
+        );
+
+        animatedFigures.forEach((figure) => figure.classList.remove("is-visible"));
+        window.requestAnimationFrame(() => {
+          animatedFigures.forEach((figure) => {
+            figure.getBoundingClientRect();
+            figure.classList.add("is-visible");
+          });
+        });
+      };
 
       if (typeof modal.showModal === "function") {
         modal.showModal();
       } else {
         modal.setAttribute("open", "");
       }
+
+      replayDetailAnimations();
     }
 
     return;
@@ -736,6 +1323,15 @@ document.addEventListener("click", (event) => {
     fallbackCopy(text);
     markCopied();
   }
+});
+
+document.addEventListener("change", (event) => {
+  if (!(event.target instanceof HTMLInputElement)) return;
+  if (!event.target.matches('.study-alignment-survey input[type="radio"]')) return;
+
+  const appWindow = event.target.closest(".study-app-window");
+  if (!appWindow) return;
+  window.setTimeout(() => resetInteractiveStudyApp(appWindow), 650);
 });
 
 document.addEventListener("keydown", (event) => {

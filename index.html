@@ -46,9 +46,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="static/css/index.css?v=mobile-results-table-70">
+    <link rel="stylesheet" href="static/css/index.css?v=result-immersion-quote-114">
     <script defer src="static/js/fontawesome.all.min.js"></script>
-    <script defer src="static/js/index.js?v=author-portrait-sequence-14"></script>
+    <script defer src="static/js/index.js?v=result-immersion-quote-32"></script>
   </head>
   <body class="classic-project-page">
     <main id="top">
@@ -607,12 +607,290 @@
 
       <section class="section study-section user-study-section" id="user-study-design">
         <div class="section-inner">
-          <div class="section-heading wide">
-            <h2 class="motivation-title result-title">User Study Design</h2>
+          <div class="section-heading wide user-study-heading">
+            <h2 class="motivation-title result-title">User Study</h2>
+            <p class="user-study-intro">We conducted a three-week user study with 22&nbsp;users, comparing three systems during everyday computer use.</p>
           </div>
-          <div class="content-placeholder">
-            <h3>Work in progress</h3>
-            <p>This section is being updated.</p>
+
+          <div class="study-systems-heading">
+            <span>Study Conditions</span>
+            <h3>Baseline Systems and INA</h3>
+          </div>
+
+          <div class="study-system-carousel" data-study-system-carousel>
+            <div class="study-system-carousel-controls">
+              <div class="study-system-carousel-dots" aria-label="Choose a study condition">
+                <button class="is-active" type="button" data-study-carousel-dot="0" aria-label="Show Logging Only" aria-current="true">
+                  <i class="is-orange" aria-hidden="true"></i><span>Logging Only</span>
+                </button>
+                <button type="button" data-study-carousel-dot="1" aria-label="Show Simple Reminder">
+                  <i class="is-blue" aria-hidden="true"></i><span>Simple Reminder</span>
+                </button>
+                <button type="button" data-study-carousel-dot="2" aria-label="Show INA">
+                  <i class="is-purple" aria-hidden="true"></i><span>INA</span>
+                </button>
+              </div>
+              <div class="study-system-carousel-nav">
+                <button type="button" data-study-carousel-prev disabled aria-label="Previous study condition">
+                  <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M12.5 4.5 7 10l5.5 5.5"></path></svg>
+                </button>
+                <button type="button" data-study-carousel-next aria-label="Next study condition">
+                  <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m7.5 4.5 5.5 5.5-5.5 5.5"></path></svg>
+                </button>
+              </div>
+            </div>
+            <p class="study-system-color-note">
+              * To minimize bias, all systems were presented to participants using color-based names: Orange, Blue, and Purple.
+            </p>
+            <div class="study-system-viewport" data-study-system-viewport tabindex="0" aria-label="Study conditions carousel">
+              <div class="study-system-grid" aria-live="polite">
+            <article class="study-system-card study-system-orange is-active" data-study-system-slide aria-hidden="false">
+              <div class="study-system-card-heading">
+                <div>
+                  <span class="study-system-index">01 · Baseline</span>
+                  <h4>Logging Only</h4>
+                  <p class="study-system-description">Records desktop activity without requesting users&rsquo; intentions or sending notifications.</p>
+                </div>
+                <span class="study-system-color-dot" aria-hidden="true"></span>
+              </div>
+              <div class="study-app-window" aria-label="Orange logging-only application">
+                <div class="study-app-titlebar study-app-titlebar-centered">
+                  <strong>Orange</strong>
+                  <div class="study-app-actions">
+                    <button class="study-app-session-toggle" type="button" data-study-session-toggle aria-pressed="false">Start</button>
+                    <span class="study-app-icon" aria-hidden="true">&#9881;</span>
+                    <span class="study-app-close" aria-hidden="true">&times;</span>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <article class="study-system-card study-system-blue" data-study-system-slide aria-hidden="true">
+              <div class="study-system-card-heading">
+                <div>
+                  <span class="study-system-index">02 · Baseline</span>
+                  <h4>Simple Reminder</h4>
+                  <p class="study-system-description">Asks users to state their intention and reminds them of this intention every 25 minutes.</p>
+                </div>
+                <span class="study-system-color-dot" aria-hidden="true"></span>
+              </div>
+              <div class="study-app-window" aria-label="Blue simple-reminder application showing the user's intention">
+                <div class="blue-app-control">
+                  <div class="study-app-titlebar study-app-titlebar-centered">
+                    <strong>Blue</strong>
+                    <div class="study-app-actions" aria-hidden="true">
+                      <span class="study-app-icon">&#9881;</span>
+                      <span class="study-app-close">&times;</span>
+                    </div>
+                  </div>
+                  <div class="study-app-input-row">
+                    <span>Study</span>
+                    <button class="study-app-session-toggle" type="button" data-simple-reminder-toggle aria-pressed="false">Start</button>
+                  </div>
+                </div>
+                <div class="blue-intention-panel">Your intention is <strong>Study</strong></div>
+                <div class="blue-history-panel">
+                  <span>Today&rsquo;s Intentions</span>
+                  <p><i aria-hidden="true"></i> 17:21&ndash;17:56&nbsp; | &nbsp;Buy a book (35m)</p>
+                </div>
+                <form class="study-alignment-survey" aria-label="Simple Reminder activity alignment survey">
+                  <fieldset>
+                    <legend>How well did your activity align with your intention?</legend>
+                    <label><input type="radio" name="blue-alignment" value="1"> <span>Not aligned at all</span></label>
+                    <label><input type="radio" name="blue-alignment" value="2"> <span>Barely aligned</span></label>
+                    <label><input type="radio" name="blue-alignment" value="3"> <span>Somewhat aligned</span></label>
+                    <label><input type="radio" name="blue-alignment" value="4"> <span>Aligned</span></label>
+                    <label><input type="radio" name="blue-alignment" value="5"> <span>Very well aligned</span></label>
+                  </fieldset>
+                </form>
+              </div>
+            </article>
+
+            <article class="study-system-card study-system-ina" data-study-system-slide aria-hidden="true">
+              <div class="study-system-card-heading">
+                <div>
+                  <span class="study-system-index">03 · Ours</span>
+                  <h4>INA</h4>
+                  <p class="study-system-description">Provides context-aware AI interventions, sending an immediate message when users go off-task.</p>
+                </div>
+                <span class="study-system-color-dot" aria-hidden="true"></span>
+              </div>
+              <div class="study-app-window study-app-purple" aria-label="Purple INA application clarifying and supporting a study intention">
+                <div class="purple-app-control">
+                  <div class="study-app-titlebar study-app-titlebar-centered">
+                    <strong>Purple</strong>
+                    <div class="study-app-actions" aria-hidden="true">
+                      <span class="study-app-icon">&#9881;</span>
+                      <span class="study-app-close">&times;</span>
+                    </div>
+                  </div>
+                  <div class="study-app-input-row">
+                    <span>Study</span>
+                    <button class="study-app-session-toggle" type="button" data-purple-toggle aria-pressed="false">Start</button>
+                  </div>
+                </div>
+                <div class="purple-history-panel">
+                  <span>Today&rsquo;s Intentions</span>
+                  <p><i aria-hidden="true"></i> 17:21&ndash;17:56&nbsp; | &nbsp;Buy a book (35m)</p>
+                </div>
+                <div class="ina-clarification-panel">
+                  <h5>Clarification</h5>
+                  <p class="ina-chat-bubble ina-chat-agent">Are you studying for a specific class or topic?</p>
+                  <p class="ina-chat-bubble ina-chat-user" data-purple-user-response hidden></p>
+                  <p class="ina-chat-bubble ina-chat-agent ina-chat-ready" data-purple-ready-message hidden>Ready! Click Start to begin.</p>
+                  <div class="ina-chat-input">
+                    <input type="text" data-purple-response placeholder="Type your response..." aria-label="Clarification response">
+                    <button type="button" data-purple-send>Send</button>
+                  </div>
+                </div>
+                <div class="ina-live-panel">
+                  <div class="ina-live-message is-on-task" data-purple-message tabindex="0">
+                    You&rsquo;re watching HCI lectures! Keep going.
+                  </div>
+                  <div class="study-feedback-panel">
+                    <p>Is this message correct?</p>
+                    <div class="study-feedback-choices">
+                      <button type="button" aria-label="Message is correct">&#10003;</button>
+                      <button type="button" aria-label="Message is incorrect">&times;</button>
+                    </div>
+                    <label for="purple-feedback-reason">Why do you think so?</label>
+                    <textarea id="purple-feedback-reason" placeholder="(Optional) Please enter the reason..."></textarea>
+                    <button class="study-feedback-submit" type="button">Submit</button>
+                  </div>
+                </div>
+                <form class="study-alignment-survey" aria-label="INA activity alignment survey">
+                  <fieldset>
+                    <legend>How well did your activity align with your intention?</legend>
+                    <label><input type="radio" name="purple-alignment" value="1"> <span>Not aligned at all</span></label>
+                    <label><input type="radio" name="purple-alignment" value="2"> <span>Barely aligned</span></label>
+                    <label><input type="radio" name="purple-alignment" value="3"> <span>Somewhat aligned</span></label>
+                    <label><input type="radio" name="purple-alignment" value="4"> <span>Aligned</span></label>
+                    <label><input type="radio" name="purple-alignment" value="5"> <span>Very well aligned</span></label>
+                  </fieldset>
+                </form>
+                </div>
+            </article>
+              </div>
+            </div>
+          </div>
+
+          <figure class="study-procedure" aria-labelledby="study-procedure-title">
+            <figcaption class="study-procedure-heading">
+              <h3 id="study-procedure-title">Study Procedure</h3>
+              <button
+                class="study-procedure-details-button"
+                type="button"
+                data-detail-toggle="#weekly-questionnaire"
+                data-detail-title="Weekly Questionnaire"
+                data-detail-variant="wide"
+                aria-label="Open the weekly questionnaire"
+              >More details <span aria-hidden="true">+</span></button>
+            </figcaption>
+
+            <div class="study-procedure-track">
+              <h4 class="study-procedure-week-label study-procedure-week-label-1">Week 1</h4>
+              <h4 class="study-procedure-week-label study-procedure-week-label-2">Week 2</h4>
+              <h4 class="study-procedure-week-label study-procedure-week-label-3">Week 3</h4>
+
+              <div class="study-procedure-track-media study-procedure-track-orientation">
+                <video
+                  src="static/images/orientation.mp4"
+                  poster="static/images/orientation.png"
+                  autoplay
+                  muted
+                  loop
+                  playsinline
+                  preload="metadata"
+                  aria-label="Online experiment orientation session."
+                ></video>
+              </div>
+              <span class="study-procedure-track-arrow study-procedure-track-arrow-1" aria-hidden="true"></span>
+              <div class="study-procedure-track-media study-procedure-track-condition study-procedure-track-condition-1">
+                <img src="static/images/position_3.gif" alt="INA condition.">
+              </div>
+              <span class="study-procedure-track-arrow study-procedure-track-arrow-2" aria-hidden="true"></span>
+              <div class="study-procedure-track-media study-procedure-track-interview study-procedure-track-interview-1">
+                <img src="static/images/interview.png" alt="Post-interview session.">
+              </div>
+              <span class="study-procedure-track-arrow study-procedure-track-arrow-3" aria-hidden="true"></span>
+              <div class="study-procedure-track-media study-procedure-track-condition study-procedure-track-condition-2">
+                <img src="static/images/position_2.gif" alt="Simple Reminder condition.">
+              </div>
+              <span class="study-procedure-track-arrow study-procedure-track-arrow-4" aria-hidden="true"></span>
+              <div class="study-procedure-track-media study-procedure-track-interview study-procedure-track-interview-2">
+                <img src="static/images/interview.png" alt="Post-interview session.">
+              </div>
+              <span class="study-procedure-track-arrow study-procedure-track-arrow-5" aria-hidden="true"></span>
+              <div class="study-procedure-track-media study-procedure-track-condition study-procedure-track-condition-3">
+                <img src="static/images/position_1.gif" alt="Logging Only condition.">
+              </div>
+              <span class="study-procedure-track-arrow study-procedure-track-arrow-6" aria-hidden="true"></span>
+              <div class="study-procedure-track-media study-procedure-track-interview study-procedure-track-interview-3">
+                <img src="static/images/interview.png" alt="Post-interview session.">
+              </div>
+
+              <p class="study-procedure-track-caption study-procedure-track-caption-orientation">Experiment<br>Orientation</p>
+              <p class="study-procedure-track-caption study-procedure-track-caption-1">Post-survey<br>Post-interview</p>
+              <p class="study-procedure-track-caption study-procedure-track-caption-2">Post-survey<br>Post-interview</p>
+              <p class="study-procedure-track-caption study-procedure-track-caption-3">Post-survey<br>Post-interview</p>
+            </div>
+          </figure>
+
+          <div class="detail-source questionnaire-source" id="weekly-questionnaire" hidden>
+            <p class="questionnaire-intro">
+              Participants completed the same post-survey after each weekly condition. Closed-ended items used a 1&ndash;5 Likert scale.
+            </p>
+
+            <section class="questionnaire-section" aria-labelledby="questionnaire-ux-title">
+              <div class="questionnaire-section-heading">
+                <span>01</span>
+                <h4 id="questionnaire-ux-title">User experience</h4>
+              </div>
+              <ol class="questionnaire-list">
+                <li><span class="questionnaire-scope">All applications</span><p>The program understood my intentions.</p></li>
+                <li><span class="questionnaire-scope">All applications</span><p>The program helped me act on the activities I intended to do.</p></li>
+                <li><span class="questionnaire-scope">All applications</span><p>I felt supported by the program.</p></li>
+                <li><span class="questionnaire-scope">All applications</span><p>The program made me feel capable of controlling my digital activities.</p></li>
+                <li><span class="questionnaire-scope">All applications</span><p>The program used my data in a meaningful way.</p></li>
+                <li><span class="questionnaire-scope">All applications</span><p>I worried my personal information might leak.</p></li>
+                <li><span class="questionnaire-scope">All applications</span><p>The program gave me new insights into my computer use.</p></li>
+                <li><span class="questionnaire-scope">All applications</span><p>Using this program interfered with my workflow. <span class="questionnaire-note">Reverse-scored</span></p></li>
+                <li><span class="questionnaire-scope">INA + Simple Reminder</span><p>Notifications helped me act according to my intentions.</p></li>
+                <li><span class="questionnaire-scope">INA + Simple Reminder</span><p>Notifications motivated intended activities.</p></li>
+                <li><span class="questionnaire-scope">INA + Simple Reminder</span><p>Notifications arrived at appropriate times.</p></li>
+                <li><span class="questionnaire-scope">INA + Simple Reminder</span><p>The program tailored its messages to my intentions and activities.</p></li>
+                <li><span class="questionnaire-scope">INA + Simple Reminder</span><p>The program provided clear explanations for its message.</p></li>
+                <li><span class="questionnaire-scope">INA + Simple Reminder</span><p>Notifications felt burdensome. <span class="questionnaire-note">Reverse-scored</span></p></li>
+                <li><span class="questionnaire-scope">INA only</span><p>The program adapted its behaviour based on my feedback.</p></li>
+              </ol>
+            </section>
+
+            <section class="questionnaire-section" aria-labelledby="questionnaire-fi-title">
+              <div class="questionnaire-section-heading">
+                <span>02</span>
+                <h4 id="questionnaire-fi-title">Focused Immersion</h4>
+              </div>
+              <ol class="questionnaire-list questionnaire-list-compact">
+                <li><span class="questionnaire-scope">All applications</span><p>While using the computer I am able to block out most other distractions.</p></li>
+                <li><span class="questionnaire-scope">All applications</span><p>While using the computer, I am absorbed in what I am doing.</p></li>
+                <li><span class="questionnaire-scope">All applications</span><p>While on the computer, I am immersed in the task I am performing.</p></li>
+                <li><span class="questionnaire-scope">All applications</span><p>When on the computer, I get distracted by other attentions very easily. <span class="questionnaire-note">Reverse-scored</span></p></li>
+                <li><span class="questionnaire-scope">All applications</span><p>While on the computer, my attention does not get diverted very easily.</p></li>
+              </ol>
+            </section>
+
+            <section class="questionnaire-section" aria-labelledby="questionnaire-open-title">
+              <div class="questionnaire-section-heading">
+                <span>03</span>
+                <h4 id="questionnaire-open-title">Open-ended survey</h4>
+              </div>
+              <ol class="questionnaire-list questionnaire-list-compact">
+                <li><span class="questionnaire-scope">All applications</span><p>Was there a moment when the program helped you focus or carry out tasks as intended? If so, please explain.</p></li>
+                <li><span class="questionnaire-scope">All applications</span><p>Has the program helped you focus or carry out tasks as intended? If so, please describe with examples, including the context and how the program helped.</p></li>
+                <li><span class="questionnaire-scope">All applications</span><p>What did you like or dislike about the program?</p></li>
+                <li><span class="questionnaire-scope">All applications</span><p>What insights, if any, have you gained about your digital habits or computer use?</p></li>
+              </ol>
+            </section>
           </div>
         </div>
       </section>
@@ -620,27 +898,244 @@
       <section class="section study-section result-section" id="study">
         <div class="section-inner">
           <div class="section-heading wide">
-            <h2 class="motivation-title result-title">Results</h2>
-            <p class="section-lede">
-              INA reduces off-task behavior and improves intention alignment during everyday computer use.
-            </p>
-            <p>
-              Results report field deployment outcomes, weekly survey measures,
-              and participant experience across the three study conditions.
-            </p>
+            <h2 class="motivation-title result-title compact-result-title">Results</h2>
           </div>
 
-          <article class="chart-panel main-results-panel" data-animate>
-            <div class="chart-header">
+          <article class="result-question-card result-focus-card" data-animate>
+            <div class="result-question-header">
               <div>
-                <span>Field Deployment</span>
-                <h3>INA improved intentional activity during everyday computer use.</h3>
+                <span>Q1</span>
+                <h3>Do users carry out their intended tasks with greater focus when using INA?</h3>
               </div>
-              <button class="detail-inline-button" type="button" data-detail-toggle="#detail-field-study" data-detail-title="Field Study Details" aria-label="Open field study details">
-                +
-              </button>
             </div>
-            <figure
+
+            <div class="result-finding-sequence" aria-label="Focus-related findings">
+              <section class="result-finding-step">
+                <div class="result-finding-slide result-finding-slide-offtask">
+                <div class="result-slide-topline">
+                  <h4><strong>Findings:</strong> INA reduced off-task time</h4>
+                  <button
+                    class="detail-inline-button result-detail-button"
+                    type="button"
+                    data-detail-toggle="#detail-focus-graph, #detail-ux-graph"
+                    data-detail-title="Detailed Result Graphs"
+                    data-detail-variant="wide"
+                    aria-label="Open detailed result graphs"
+                  >
+                    <span>+</span>
+                    <em>More details</em>
+                  </button>
+                </div>
+                <div class="result-metric-stage result-single-metric" aria-label="Off-task time rate summary">
+                  <div class="result-metric-block result-metric-offtask">
+                    <div class="result-metric-values">
+                      <span class="result-value-group">
+                        <b>16.6%</b>
+                        <small>simple reminder</small>
+                      </span>
+                      <span class="result-improvement" aria-label="37 percent decrease">&darr; 37%</span>
+                      <span class="result-arrow" aria-hidden="true">&rarr;</span>
+                      <span class="result-value-group result-value-primary">
+                        <b>10.4%</b>
+                        <small>INA</small>
+                      </span>
+                    </div>
+                    <p><span>Off-task</span> time rate</p>
+                  </div>
+                </div>
+                </div>
+              </section>
+
+              <section class="result-finding-step">
+                <div class="result-finding-slide result-finding-slide-alignment">
+                <div class="result-slide-topline">
+                  <h4><strong>Findings:</strong> INA improved perceived intention alignment</h4>
+                  <button
+                    class="detail-inline-button result-detail-button"
+                    type="button"
+                    data-detail-toggle="#detail-focus-graph, #detail-ux-graph"
+                    data-detail-title="Detailed Result Graphs"
+                    data-detail-variant="wide"
+                    aria-label="Open detailed result graphs"
+                  >
+                    <span>+</span>
+                    <em>More details</em>
+                  </button>
+                </div>
+                <div class="result-metric-stage result-single-metric" aria-label="Intention alignment rating summary">
+                  <div class="result-metric-block result-metric-alignment">
+                    <div class="result-metric-values">
+                      <span class="result-value-group result-count-sequence result-count-sequence-left">
+                        <b
+                          data-result-count
+                          data-result-count-start="0"
+                          data-result-count-end="4.23"
+                          data-result-count-decimals="2"
+                          data-result-count-delay="620"
+                          data-result-count-duration="1500"
+                        >4.23</b>
+                        <small>simple reminder</small>
+                      </span>
+                      <span class="result-arrow" aria-hidden="true">&rarr;</span>
+                      <span class="result-value-group result-value-primary result-count-sequence result-count-sequence-right">
+                        <b
+                          data-result-count
+                          data-result-count-start="0"
+                          data-result-count-end="4.44"
+                          data-result-count-decimals="2"
+                          data-result-count-suffix="/5"
+                          data-result-count-delay="2300"
+                          data-result-count-duration="1500"
+                        >4.44<em>/5</em></b>
+                        <small>INA</small>
+                      </span>
+                    </div>
+                    <p class="result-metric-label-with-detail">
+                      <span>Intention<br>Alignment rate</span>
+                      <button
+                        class="detail-inline-button result-mini-detail-button"
+                        type="button"
+                        data-detail-toggle="#detail-intention-alignment-survey"
+                        data-detail-title="End-of-session Intention Alignment Survey"
+                        aria-label="Open end-of-session intention alignment survey"
+                      >+</button>
+                    </p>
+                  </div>
+                </div>
+                </div>
+              </section>
+
+              <section class="result-finding-step">
+                <div class="result-finding-slide result-finding-slide-immersion">
+                <div class="result-slide-topline">
+                  <h4><strong>Findings:</strong> INA enhanced user focus</h4>
+                  <button
+                    class="detail-inline-button result-detail-button"
+                    type="button"
+                    data-detail-toggle="#detail-focus-graph, #detail-ux-graph"
+                    data-detail-title="Detailed Result Graphs"
+                    data-detail-variant="wide"
+                    aria-label="Open detailed result graphs"
+                  >
+                    <span>+</span>
+                    <em>More details</em>
+                  </button>
+                </div>
+                <div class="result-metric-stage result-single-metric" aria-label="Focused immersion score summary">
+                  <div class="result-metric-block">
+                    <div class="result-metric-values result-metric-three-values">
+                      <span class="result-value-group result-count-sequence result-count-sequence-left">
+                        <b
+                          data-result-count
+                          data-result-count-start="0"
+                          data-result-count-end="2.9"
+                          data-result-count-decimals="1"
+                          data-result-count-delay="620"
+                          data-result-count-duration="1500"
+                        >2.9</b>
+                        <small>logging only</small>
+                      </span>
+                      <span class="result-arrow" aria-hidden="true">&rarr;</span>
+                      <span class="result-value-group result-count-sequence result-count-sequence-middle">
+                        <b
+                          data-result-count
+                          data-result-count-start="0"
+                          data-result-count-end="3.3"
+                          data-result-count-decimals="1"
+                          data-result-count-delay="2360"
+                          data-result-count-duration="1500"
+                        >3.3</b>
+                        <small>simple reminder</small>
+                      </span>
+                      <span class="result-arrow" aria-hidden="true">&rarr;</span>
+                      <span class="result-value-group result-value-primary result-value-underlined result-count-sequence result-count-sequence-right">
+                        <b
+                          data-result-count
+                          data-result-count-start="0"
+                          data-result-count-end="3.7"
+                          data-result-count-decimals="1"
+                          data-result-count-suffix="/5"
+                          data-result-count-delay="4100"
+                          data-result-count-duration="1500"
+                        >3.7<em>/5</em></b>
+                        <small>INA</small>
+                      </span>
+                    </div>
+                    <p>Focused Immersion<br>Score</p>
+                  </div>
+                </div>
+                </div>
+              </section>
+
+              <section class="result-finding-step">
+                <div class="result-finding-slide result-finding-slide-immersion-quote">
+                <div class="result-slide-topline">
+                  <h4><strong>Findings:</strong> INA enhanced user focus</h4>
+                  <button
+                    class="detail-inline-button result-detail-button"
+                    type="button"
+                    data-detail-toggle="#detail-focus-graph, #detail-ux-graph"
+                    data-detail-title="Detailed Result Graphs"
+                    data-detail-variant="wide"
+                    aria-label="Open detailed result graphs"
+                  >
+                    <span>+</span>
+                    <em>More details</em>
+                  </button>
+                </div>
+                <div class="result-metric-stage result-single-metric result-metric-stage-static" aria-label="Focused immersion score summary">
+                  <div class="result-metric-block">
+                    <div class="result-metric-values result-metric-three-values">
+                      <span class="result-value-group">
+                        <b>2.9</b>
+                        <small>logging only</small>
+                      </span>
+                      <span class="result-arrow" aria-hidden="true">&rarr;</span>
+                      <span class="result-value-group">
+                        <b>3.3</b>
+                        <small>simple reminder</small>
+                      </span>
+                      <span class="result-arrow" aria-hidden="true">&rarr;</span>
+                      <span class="result-value-group result-value-primary result-value-underlined">
+                        <b>3.7<em>/5</em></b>
+                        <small>INA</small>
+                      </span>
+                    </div>
+                    <p>Focused Immersion<br>Score</p>
+                  </div>
+                </div>
+                <blockquote class="result-quote result-quote-purple result-immersion-quote">
+                  <strong>P1, P5</strong>
+                  <p>&ldquo;<b>Writing down my intention</b> made me use the computer more deliberately, so I <b>rarely got sidetracked</b>.&rdquo;</p>
+                </blockquote>
+                </div>
+              </section>
+            </div>
+
+            <div class="detail-source" id="detail-intention-alignment-survey" hidden>
+              <div class="result-survey-mock result-survey-mock-modal" aria-label="End-of-session intention alignment survey">
+                <div class="result-survey-titlebar">
+                  <strong>Purple</strong>
+                  <span></span>
+                </div>
+                <div class="result-survey-input">
+                  <span>Study</span>
+                  <button type="button">Stop</button>
+                </div>
+                <div class="result-survey-panel">
+                  <strong>How well did your activity align with your intention?</strong>
+                  <p><i></i>Not aligned at all</p>
+                  <p><i></i>Barely aligned</p>
+                  <p><i></i>Somewhat aligned</p>
+                  <p><i></i>Aligned</p>
+                  <p><i></i>Very well aligned</p>
+                </div>
+                <small>(self-reported score collected at the end of each session)</small>
+              </div>
+            </div>
+
+            <div class="detail-source result-graph-source" id="detail-focus-graph" hidden>
+              <figure
               class="paper-svg-figure figure-six-svg"
               role="img"
               aria-label="Figure 6. INA has lower LLM-estimated off-task ratio than Simple Reminder, 0.104 versus 0.166, and higher intention alignment rating, 4.44 versus 4.23. Both differences are significant at p less than 0.001."
@@ -666,8 +1161,8 @@
                   <text class="svg-value" x="508" y="114">0.104</text>
                   <text class="svg-value" x="696" y="224">0.166</text>
                   <g class="svg-late svg-bracket">
-                    <path d="M 775 105 H 750 M 775 105 V 215 M 775 215 H 750"></path>
-                    <text x="804" y="160" transform="rotate(90 804 160)">***</text>
+                    <path d="M 805 105 H 780 M 805 105 V 215 M 805 215 H 780"></path>
+                    <text x="834" y="160" transform="rotate(90 834 160)">***</text>
                   </g>
                   <g class="svg-ticks" transform="translate(190 292)">
                     <line class="svg-axis" x1="0" y1="0" x2="630" y2="0"></line>
@@ -729,19 +1224,61 @@
                 <strong>Figure 6:</strong> (a) Mean LLM-estimated off-task ratio. (b) Mean intention alignment rating based on end-of-session self-reports. Error bars denote 95% confidence intervals across participants (user-averaged). ***, **, and *, indicate significance of p &lt; 0.001, p &lt; 0.01, p &lt; 0.05, respectively. Arrows indicate whether higher (&uarr;) or lower (&darr;) values are more favorable.
               </figcaption>
             </figure>
+            </div>
           </article>
 
-          <div class="secondary-chart-grid">
-            <article class="chart-panel survey-results-panel" data-animate>
-              <div class="chart-header">
-                <div>
-                  <span>User Experience</span>
-                  <h3>Participants rated INA highest for support and message effectiveness.</h3>
-                </div>
-                <button class="detail-inline-button" type="button" data-detail-toggle="#detail-survey" data-detail-title="Survey Details" aria-label="Open survey details">
-                  +
-                </button>
+          <article class="result-question-card result-ux-card" data-animate>
+            <div class="result-question-header">
+              <div>
+                <span>Q2</span>
+                <h3>What is the overall user experience with INA?</h3>
               </div>
+            </div>
+
+            <div class="result-finding-sequence" aria-label="User experience findings">
+              <section class="result-finding-step">
+                <div class="result-finding-slide result-finding-slide-ux">
+                <div class="result-slide-topline">
+                  <h4><strong>Findings:</strong> INA was experienced as supportive and effective</h4>
+                  <button
+                    class="detail-inline-button result-detail-button"
+                    type="button"
+                    data-detail-toggle="#detail-focus-graph, #detail-ux-graph"
+                    data-detail-title="Detailed Result Graphs"
+                    data-detail-variant="wide"
+                    aria-label="Open detailed result graphs"
+                  >
+                    <span>+</span>
+                    <em>More details</em>
+                  </button>
+                </div>
+                <p class="result-slide-subtitle">Participants rated INA highest for support and message effectiveness while reporting lower workflow disruption.</p>
+                <div class="result-ux-metric-grid" aria-label="Summary of user experience scores">
+                  <div>
+                    <span>Support</span>
+                    <strong>3.75<em>/5</em></strong>
+                    <small>INA</small>
+                  </div>
+                  <div>
+                    <span>Message Effectiveness</span>
+                    <strong>3.74<em>/5</em></strong>
+                    <small>INA</small>
+                  </div>
+                  <div>
+                    <span>Workflow Disruption</span>
+                    <strong>3.09<em>/5</em></strong>
+                    <small>lower than both baselines</small>
+                  </div>
+                </div>
+                <blockquote class="result-quote result-quote-purple">
+                  <strong>P15</strong>
+                  <p>&ldquo;It (INA) <b>helped me focus</b> more quickly, so my <b>work efficiency improved</b>.&rdquo;</p>
+                </blockquote>
+                </div>
+              </section>
+            </div>
+
+            <div class="detail-source result-graph-source" id="detail-ux-graph" hidden>
               <figure
                 class="paper-svg-figure figure-seven-svg"
                 role="img"
@@ -843,9 +1380,8 @@
                   <strong>Figure 7:</strong> (a) Mean focused immersion scores, a self-reported measure of concentration taken during the weekly post-survey. (b) Mean user experience survey scores, computed by averaging responses within categories: Support, Message Effectiveness, Workflow Disruption. Error bars denote 95% confidence intervals across participants (user-averaged). ***, **, and *, indicate significance of p &lt; 0.001, p &lt; 0.01, p &lt; 0.05, respectively. (&uarr;) indicates that higher values are more favorable.
                 </figcaption>
               </figure>
-            </article>
-
-          </div>
+            </div>
+          </article>
 
           <div class="detail-source" id="detail-field-study" hidden>
             <p>
