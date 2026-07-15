@@ -46,9 +46,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="static/css/index.css?v=mobile-scene-alignment-127">
+    <link rel="stylesheet" href="static/css/index.css?v=intentionbench-result-sequence-132">
     <script defer src="static/js/fontawesome.all.min.js"></script>
-    <script defer src="static/js/index.js?v=result-detail-flow-41"></script>
+    <script defer src="static/js/index.js?v=intentionbench-result-sequence-44"></script>
   </head>
   <body class="classic-project-page">
     <main id="top">
@@ -503,8 +503,12 @@
 
           <article class="intentionbench-video-story">
             <div class="intentionbench-copy">
-              <p class="evaluation-description">
-                How accurately can INA detect <span class="task-state-label task-state-off">off-task</span> behavior?
+              <p
+                class="evaluation-question"
+                data-intentionbench-question
+                aria-label="How accurately can INA detect off-task behavior?"
+              >How accurately can INA detect <span class="task-state-label task-state-off">off-task</span> behavior?</p>
+              <p class="evaluation-description" data-intentionbench-explanation>
                 To find out, we built
                 <a class="benchmark-term-label benchmark-name-label" href="https://huggingface.co/datasets/juheonch/intention_bench" target="_blank" rel="noopener">
                   <img src="static/images/huggingface-logo.svg" alt="" aria-hidden="true">
@@ -609,11 +613,10 @@
         <div class="section-inner">
           <div class="section-heading wide user-study-heading">
             <h2 class="motivation-title result-title">User Study</h2>
-            <p class="user-study-intro">We conducted a three-week user study with 22&nbsp;users, comparing three systems during everyday computer use.</p>
+            <p class="user-study-intro">We conducted a <strong class="user-study-duration" data-animate><span class="user-study-duration-icon" aria-hidden="true"><i class="fas fa-calendar-alt"></i></span><span>three-week</span></strong> user study with <strong class="user-study-participant-count" data-animate>22&nbsp;<span class="user-study-users"><span class="user-study-users-icon" aria-hidden="true"><i class="fas fa-users"></i></span><span class="user-study-users-label">users</span></span></strong>, comparing <strong class="user-study-system-count">three systems</strong> during everyday computer use.</p>
           </div>
 
           <div class="study-systems-heading">
-            <span>Study Conditions</span>
             <h3>Baseline Systems and INA</h3>
           </div>
 
@@ -810,7 +813,15 @@
               </div>
               <span class="study-procedure-track-arrow study-procedure-track-arrow-2" aria-hidden="true"></span>
               <div class="study-procedure-track-media study-procedure-track-interview study-procedure-track-interview-1">
-                <img src="static/images/interview.png" alt="Post-interview session.">
+                <video
+                  src="static/images/interview.mp4"
+                  autoplay
+                  muted
+                  loop
+                  playsinline
+                  preload="metadata"
+                  aria-label="Post-interview session."
+                ></video>
               </div>
               <span class="study-procedure-track-arrow study-procedure-track-arrow-3" aria-hidden="true"></span>
               <div class="study-procedure-track-media study-procedure-track-condition study-procedure-track-condition-2">
@@ -818,7 +829,15 @@
               </div>
               <span class="study-procedure-track-arrow study-procedure-track-arrow-4" aria-hidden="true"></span>
               <div class="study-procedure-track-media study-procedure-track-interview study-procedure-track-interview-2">
-                <img src="static/images/interview.png" alt="Post-interview session.">
+                <video
+                  src="static/images/interview.mp4"
+                  autoplay
+                  muted
+                  loop
+                  playsinline
+                  preload="metadata"
+                  aria-label="Post-interview session."
+                ></video>
               </div>
               <span class="study-procedure-track-arrow study-procedure-track-arrow-5" aria-hidden="true"></span>
               <div class="study-procedure-track-media study-procedure-track-condition study-procedure-track-condition-3">
@@ -826,7 +845,15 @@
               </div>
               <span class="study-procedure-track-arrow study-procedure-track-arrow-6" aria-hidden="true"></span>
               <div class="study-procedure-track-media study-procedure-track-interview study-procedure-track-interview-3">
-                <img src="static/images/interview.png" alt="Post-interview session.">
+                <video
+                  src="static/images/interview.mp4"
+                  autoplay
+                  muted
+                  loop
+                  playsinline
+                  preload="metadata"
+                  aria-label="Post-interview session."
+                ></video>
               </div>
 
               <p class="study-procedure-track-caption study-procedure-track-caption-orientation">Experiment<br>Orientation</p>
@@ -901,7 +928,7 @@
             <h2 class="motivation-title result-title compact-result-title">Results</h2>
           </div>
 
-          <article class="result-question-card result-focus-card" data-animate>
+          <article class="result-question-card result-focus-card">
             <div class="result-question-header">
               <div>
                 <span>Q1</span>
@@ -1206,43 +1233,101 @@
 
             <div class="result-finding-sequence" aria-label="User experience findings">
               <section class="result-finding-step">
-                <div class="result-finding-slide result-finding-slide-ux">
-                <div class="result-slide-topline">
-                  <h4><strong>Findings:</strong> INA was experienced as supportive and effective</h4>
-                  <button
-                    class="detail-inline-button result-detail-button"
-                    type="button"
-                    data-detail-toggle="#detail-focus-graph, #detail-ux-graph"
-                    data-detail-title="Detailed Result Graphs"
-                    data-detail-variant="wide"
-                    aria-label="Open detailed result graphs"
-                  >
-                    <span>+</span>
-                    <em>More details</em>
-                  </button>
+                <div class="result-finding-slide result-finding-slide-ux result-finding-slide-qualitative">
+                  <div class="result-slide-topline">
+                    <h4><strong>Findings:</strong> Context-aware notifications were recognized as effective</h4>
+                    <button
+                      class="detail-inline-button result-detail-button"
+                      type="button"
+                      data-detail-toggle="#detail-focus-graph, #detail-ux-graph"
+                      data-detail-title="Detailed Result Graphs"
+                      data-detail-variant="wide"
+                      aria-label="Open detailed result graphs"
+                    >
+                      <span>+</span>
+                      <em>More details</em>
+                    </button>
+                  </div>
+                  <p class="result-slide-subtitle">Timely alerts helped users recognize distractions and quickly return to their tasks</p>
+                  <div class="result-qualitative-layout">
+                    <div class="result-qualitative-media-slot" data-qualitative-media="effective-notifications">
+                      <span>Image or video</span>
+                      <p>&ldquo;Lane-keeping assist feature&rdquo; <small>(P14)</small></p>
+                    </div>
+                    <div class="result-qualitative-quotes">
+                      <blockquote class="result-quote result-quote-purple result-qualitative-quote">
+                        <strong>P4</strong>
+                        <p>&ldquo;It [INA] <b>notified me right away when I got sidetracked</b> with email or YouTube during a meeting.&rdquo;</p>
+                      </blockquote>
+                      <blockquote class="result-quote result-quote-purple result-qualitative-quote">
+                        <strong>P14</strong>
+                        <p>&ldquo;The moment I got distracted by YouTube while studying, a <b>notification helped me return to my intended task</b>.&rdquo;</p>
+                      </blockquote>
+                      <blockquote class="result-quote result-quote-purple result-qualitative-quote">
+                        <strong>P20</strong>
+                        <p>&ldquo;The immediate notification <b>allowed</b> for a swift <b>return to the original task</b>.&rdquo;</p>
+                      </blockquote>
+                    </div>
+                  </div>
                 </div>
-                <p class="result-slide-subtitle">Participants rated INA highest for support and message effectiveness while reporting lower workflow disruption.</p>
-                <div class="result-ux-metric-grid" aria-label="Summary of user experience scores">
-                  <div>
-                    <span>Support</span>
-                    <strong>3.75<em>/5</em></strong>
-                    <small>INA</small>
+              </section>
+
+              <section class="result-finding-step">
+                <div class="result-finding-slide result-finding-slide-ux result-finding-slide-qualitative">
+                  <div class="result-slide-topline">
+                    <h4><strong>Findings:</strong> INA was perceived as a supportive and motivating assistant</h4>
                   </div>
-                  <div>
-                    <span>Message Effectiveness</span>
-                    <strong>3.74<em>/5</em></strong>
-                    <small>INA</small>
-                  </div>
-                  <div>
-                    <span>Workflow Disruption</span>
-                    <strong>3.09<em>/5</em></strong>
-                    <small>lower than both baselines</small>
+                  <div class="result-qualitative-layout">
+                    <div class="result-qualitative-media-slot" data-qualitative-media="supportive-assistant">
+                      <span>Image or video</span>
+                      <div class="result-qualitative-media-copy">
+                        <p>Felt like <b>secretary, parent</b> <small>(P1)</small></p>
+                        <p>&ldquo;I strongly felt as if I was being <b>cheered on</b>&rdquo; <small>(P7)</small></p>
+                      </div>
+                    </div>
+                    <div class="result-qualitative-quotes">
+                      <blockquote class="result-quote result-quote-purple result-qualitative-quote">
+                        <strong>P2, P4</strong>
+                        <p>&ldquo;Somewhat interactive, almost like a <b>mate</b> or <b>one-on-one manager</b> offering personalized support.&rdquo;</p>
+                      </blockquote>
+                      <blockquote class="result-quote result-quote-purple result-qualitative-quote">
+                        <strong>P1, P7</strong>
+                        <p>&ldquo;When I received positive messages, I felt <b>proud</b> and <b>recognized</b>&hellip; compliments <b>boosted my self-esteem</b>.&rdquo;</p>
+                      </blockquote>
+                      <blockquote class="result-quote result-quote-blue result-qualitative-quote">
+                        <strong>P19</strong>
+                        <p>&ldquo;The <b>[simple reminder]</b> messages felt like conveying obligations <b>without a sense of warmth or companionship</b>.&rdquo;</p>
+                      </blockquote>
+                    </div>
                   </div>
                 </div>
-                <blockquote class="result-quote result-quote-purple">
-                  <strong>P15</strong>
-                  <p>&ldquo;It (INA) <b>helped me focus</b> more quickly, so my <b>work efficiency improved</b>.&rdquo;</p>
-                </blockquote>
+              </section>
+
+              <section class="result-finding-step">
+                <div class="result-finding-slide result-finding-slide-ux result-finding-slide-qualitative">
+                  <div class="result-slide-topline">
+                    <h4><strong>Findings:</strong> Downsides of INA, despite effectiveness</h4>
+                  </div>
+                  <p class="result-slide-subtitle">Workflow disruption and privacy concerns</p>
+                  <div class="result-qualitative-layout">
+                    <div class="result-qualitative-media-slot" data-qualitative-media="ina-downsides">
+                      <span>Image or video</span>
+                    </div>
+                    <div class="result-qualitative-quotes">
+                      <blockquote class="result-quote result-quote-purple result-qualitative-quote">
+                        <strong>P12</strong>
+                        <p>&ldquo;I felt the <b>alerts came too frequently</b> and were somewhat distracting. I repeat [the Q&amp;As for every start of a session] &hellip; it felt frustrating. I wondered, why am I inputting this again?&rdquo;</p>
+                      </blockquote>
+                      <blockquote class="result-quote result-quote-purple result-qualitative-quote">
+                        <strong>P17</strong>
+                        <p>&ldquo;When dealing with <b>payment-related work</b>, I <b>turned off the program</b>.&rdquo;</p>
+                      </blockquote>
+                      <blockquote class="result-quote result-quote-purple result-qualitative-quote">
+                        <strong>P9</strong>
+                        <p>&ldquo;When chatting with others, it [INA] told me not to get distracted &hellip; which <b>felt impressive but also a bit concerning</b>.&rdquo;</p>
+                      </blockquote>
+                    </div>
+                  </div>
                 </div>
               </section>
             </div>

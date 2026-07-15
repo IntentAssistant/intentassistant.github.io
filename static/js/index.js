@@ -345,6 +345,128 @@ if ("IntersectionObserver" in window && animatedElements.length) {
   animatedElements.forEach((element) => element.classList.add("is-visible"));
 }
 
+document.querySelectorAll(".intentionbench-video-story").forEach((story) => {
+  const question = story.querySelector("[data-intentionbench-question]");
+  const explanation = story.querySelector("[data-intentionbench-explanation]");
+  const resultBridge = story.nextElementSibling?.classList.contains("intentionbench-result-bridge")
+    ? story.nextElementSibling
+    : null;
+  const resultHeading = resultBridge?.querySelector(".intentionbench-result-heading");
+  const resultSummary = resultBridge?.querySelector(":scope > p");
+  if (!question || !explanation) return;
+
+  const typingTextNodes = [];
+  const collectTextNodes = (node) => {
+    node.childNodes.forEach((child) => {
+      if (child.nodeType === Node.TEXT_NODE) {
+        if (child.nodeValue) typingTextNodes.push({ node: child, text: child.nodeValue });
+        return;
+      }
+      collectTextNodes(child);
+    });
+  };
+
+  collectTextNodes(question);
+  question.style.minHeight = `${question.getBoundingClientRect().height}px`;
+  typingTextNodes.forEach(({ node }) => {
+    node.nodeValue = "";
+  });
+  explanation.setAttribute("aria-hidden", "true");
+  resultHeading?.setAttribute("aria-hidden", "true");
+  resultSummary?.setAttribute("aria-hidden", "true");
+
+  const revealResultBridge = (immediately = false) => {
+    if (!resultBridge) return;
+
+    const revealSummary = () => {
+      resultBridge.classList.add("is-summary-visible");
+      resultSummary?.removeAttribute("aria-hidden");
+    };
+
+    const revealHeadline = () => {
+      resultBridge.classList.add("is-headline-visible");
+      resultHeading?.removeAttribute("aria-hidden");
+      if (immediately) {
+        revealSummary();
+      } else {
+        window.setTimeout(revealSummary, 650);
+      }
+    };
+
+    if (immediately) {
+      revealHeadline();
+    } else {
+      window.setTimeout(revealHeadline, 1100);
+    }
+  };
+
+  const revealExplanation = (revealResultsImmediately = false) => {
+    story.classList.add("is-explanation-visible");
+    explanation.removeAttribute("aria-hidden");
+    revealResultBridge(revealResultsImmediately);
+  };
+
+  const showCompleteIntro = () => {
+    typingTextNodes.forEach(({ node, text }) => {
+      node.nodeValue = text;
+    });
+    question.classList.remove("is-typing");
+    revealExplanation(true);
+  };
+
+  const startIntro = () => {
+    if (story.dataset.intentionbenchIntroStarted === "true") return;
+    story.dataset.intentionbenchIntroStarted = "true";
+    story.classList.add("is-intro-started");
+    resultBridge?.classList.add("is-sequence-started");
+
+    if (reducedMotionQuery.matches) {
+      showCompleteIntro();
+      return;
+    }
+
+    let nodeIndex = 0;
+    let characterIndex = 0;
+    question.classList.add("is-typing");
+
+    const typeNextCharacter = () => {
+      const current = typingTextNodes[nodeIndex];
+      if (!current) {
+        question.classList.remove("is-typing");
+        window.setTimeout(revealExplanation, 1000);
+        return;
+      }
+
+      characterIndex += 1;
+      current.node.nodeValue = current.text.slice(0, characterIndex);
+      const typedCharacter = current.text[Math.max(0, characterIndex - 1)] || "";
+
+      if (characterIndex >= current.text.length) {
+        nodeIndex += 1;
+        characterIndex = 0;
+      }
+
+      window.setTimeout(typeNextCharacter, typedCharacter === " " ? 72 : 42);
+    };
+
+    window.setTimeout(typeNextCharacter, 180);
+  };
+
+  if ("IntersectionObserver" in window) {
+    const intentionBenchObserver = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        startIntro();
+        intentionBenchObserver.disconnect();
+      },
+      { rootMargin: "0px 0px -16% 0px", threshold: 0.3 },
+    );
+    intentionBenchObserver.observe(story);
+  } else {
+    startIntro();
+  }
+});
+
 const formatAnimatedCount = (value, decimals, suffix) => {
   const formattedValue = Number(value).toFixed(decimals);
   return suffix ? `${formattedValue}<em>${suffix}</em>` : formattedValue;
@@ -353,6 +475,9 @@ const formatAnimatedCount = (value, decimals, suffix) => {
 const animateResultCounters = (scope) => {
   const counters = Array.from(scope.querySelectorAll("[data-result-count]"));
   if (!counters.length) return;
+
+  let isReplay = false;
+  let latestCompletion = 0;
 
   counters.forEach((counter) => {
     const start = Number(counter.getAttribute("data-result-count-start") || "0");
@@ -363,6 +488,17 @@ const animateResultCounters = (scope) => {
     const duration = Number(counter.getAttribute("data-result-count-duration") || "1200");
 
     window.clearTimeout(Number(counter.dataset.resultCountTimer || "0"));
+
+    if (counter.dataset.resultCountPlayed === "true") {
+      isReplay = true;
+      counter.dataset.resultCountForceComplete = "true";
+      counter.innerHTML = formatAnimatedCount(end, decimals, suffix);
+      return;
+    }
+
+    counter.dataset.resultCountPlayed = "true";
+    counter.dataset.resultCountForceComplete = "false";
+    latestCompletion = Math.max(latestCompletion, delay + duration);
     counter.innerHTML = formatAnimatedCount(start, decimals, suffix);
 
     if (reducedMotionQuery.matches) {
@@ -374,6 +510,11 @@ const animateResultCounters = (scope) => {
       const startTime = performance.now();
 
       const tick = (now) => {
+        if (counter.dataset.resultCountForceComplete === "true") {
+          counter.innerHTML = formatAnimatedCount(end, decimals, suffix);
+          return;
+        }
+
         const progress = Math.min(1, (now - startTime) / duration);
         const easedProgress = 1 - Math.pow(1 - progress, 3);
         const currentValue = start + (end - start) * easedProgress;
@@ -391,6 +532,19 @@ const animateResultCounters = (scope) => {
 
     counter.dataset.resultCountTimer = String(timer);
   });
+
+  const markCountersComplete = () => {
+    scope.classList.add("has-played-result-counters");
+    scope.dispatchEvent(new CustomEvent("result-counters-complete", { bubbles: true }));
+  };
+
+  window.clearTimeout(Number(scope.dataset.resultCountersCompleteTimer || "0"));
+  if (isReplay || reducedMotionQuery.matches) {
+    markCountersComplete();
+  } else {
+    const completionTimer = window.setTimeout(markCountersComplete, latestCompletion + 80);
+    scope.dataset.resultCountersCompleteTimer = String(completionTimer);
+  }
 };
 
 document.querySelectorAll(".result-finding-sequence").forEach((sequence) => {
@@ -449,9 +603,6 @@ document.querySelectorAll(".result-finding-sequence").forEach((sequence) => {
   const typingTargets = [];
 
   if (isPrimaryResultSequence && resultTitle) {
-    const stickyTitle = resultTitle.cloneNode(true);
-    stickyTitle.classList.add("result-sticky-title");
-    stickyContext.append(stickyTitle);
     resultSection?.classList.add("is-results-scrolly");
   }
 
@@ -477,6 +628,11 @@ document.querySelectorAll(".result-finding-sequence").forEach((sequence) => {
         questionLabel.textContent = "";
         questionText.textContent = "";
       }
+
+      if (commonButton) {
+        commonButton.classList.add("result-question-detail-button");
+        stickyQuestion.append(commonButton);
+      }
     }
     stickyContext.append(stickyQuestion);
     questionCard?.classList.add("is-scrolly-enhanced");
@@ -488,8 +644,7 @@ document.querySelectorAll(".result-finding-sequence").forEach((sequence) => {
 
   const detailFooter = document.createElement("div");
   detailFooter.className = "result-finding-detail-footer";
-  if (isPrimaryResultSequence) detailFooter.classList.add("result-finding-detail-footer-primary");
-  if (commonButton) detailFooter.append(commonButton);
+  if (!isPrimaryResultSequence && commonButton) detailFooter.append(commonButton);
 
   panels.forEach((panel, index) => {
     toplines[index]?.remove();
@@ -505,17 +660,16 @@ document.querySelectorAll(".result-finding-sequence").forEach((sequence) => {
   if (stickyContext.children.length) stickyStage.append(stickyContext);
   stickyStage.append(fixedTopline, panelStack);
   sequence.replaceChildren(stickyStage, scrollTrack);
-  if (detailFooter.children.length) {
-    if (isPrimaryResultSequence) {
-      sequence.after(detailFooter);
-    } else {
-      sequence.append(detailFooter);
-    }
-  }
+  if (detailFooter.children.length) sequence.append(detailFooter);
   sequence.classList.add("is-fade-sequence");
   if (typingTargets.length) sequence.classList.add("is-awaiting-result-intro");
   sequence.style.setProperty("--finding-count", String(panels.length));
-  sequence.style.setProperty("--finding-track-height", `${Math.max(0, panels.length - 1) * 82}svh`);
+  const trackHeight = isPrimaryResultSequence
+    ? panels.length * 120
+    : panels.length > 1
+      ? panels.length * 100
+      : 0;
+  sequence.style.setProperty("--finding-track-height", `${trackHeight}svh`);
   const titleItems = Array.from(titleStack.querySelectorAll("span"));
 
   let activeIndex = 0;
@@ -561,10 +715,18 @@ document.querySelectorAll(".result-finding-sequence").forEach((sequence) => {
     const nextIndex = Math.min(panels.length - 1, Math.floor(rawProgress * panels.length));
     setActivePanel(nextIndex);
     if (isPrimaryResultSequence) {
-      const isImmersionActive = panels[activeIndex]?.classList.contains("result-finding-slide-immersion");
+      const activePanel = panels[activeIndex];
+      const isImmersionActive = activePanel?.classList.contains("result-finding-slide-immersion");
+      const areCountersComplete = activePanel?.classList.contains("has-played-result-counters");
       const panelProgress = rawProgress * panels.length - activeIndex;
-      sequence.classList.toggle("is-immersion-blue-visible", isImmersionActive && panelProgress >= 0.38);
-      sequence.classList.toggle("is-immersion-purple-visible", isImmersionActive && panelProgress >= 0.72);
+      sequence.classList.toggle(
+        "is-immersion-blue-visible",
+        isImmersionActive && areCountersComplete && panelProgress >= 0.38,
+      );
+      sequence.classList.toggle(
+        "is-immersion-purple-visible",
+        isImmersionActive && areCountersComplete && panelProgress >= 0.72,
+      );
       updateFixedSubtitle();
     }
     isQueued = false;
@@ -576,6 +738,7 @@ document.querySelectorAll(".result-finding-sequence").forEach((sequence) => {
     window.requestAnimationFrame(updateActivePanel);
   };
 
+  sequence.addEventListener("result-counters-complete", queueUpdate);
   window.addEventListener("scroll", queueUpdate, { passive: true });
   window.addEventListener("resize", queueUpdate);
   updateActivePanel();
