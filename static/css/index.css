@@ -5965,12 +5965,34 @@ section[id] {
   margin-bottom: clamp(36px, 5vw, 64px);
 }
 
-.result-finding-slide-immersion-quote .result-single-metric {
-  margin-bottom: clamp(50px, 6vw, 82px);
+.js-enabled .result-finding-slide-immersion .result-value-underlined::after {
+  opacity: 0;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition:
+    opacity 360ms ease,
+    transform 520ms ease;
 }
 
-.result-immersion-quote {
+.js-enabled .result-finding-sequence.is-immersion-quote-visible .result-finding-slide-immersion .result-value-underlined::after {
+  opacity: 1;
+  transform: scaleX(1);
+}
+
+.js-enabled .result-finding-slide-immersion .result-immersion-quote {
   margin-top: 0;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(28px);
+  transition:
+    opacity 420ms ease,
+    transform 420ms ease;
+}
+
+.js-enabled .result-finding-sequence.is-immersion-quote-visible .result-finding-slide-immersion .result-immersion-quote {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
 }
 
 .result-slide-layout {

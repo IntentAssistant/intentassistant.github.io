@@ -526,6 +526,9 @@ document.querySelectorAll(".result-finding-sequence").forEach((sequence) => {
     const rawProgress = Math.min(1, Math.max(0, -rect.top / travelDistance));
     const nextIndex = Math.min(panels.length - 1, Math.floor(rawProgress * panels.length));
     setActivePanel(nextIndex);
+    if (isPrimaryResultSequence) {
+      sequence.classList.toggle("is-immersion-quote-visible", rawProgress >= 0.86);
+    }
     isQueued = false;
   };
 
