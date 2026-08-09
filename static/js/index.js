@@ -1666,14 +1666,41 @@ document.addEventListener("click", (event) => {
     }, 1600);
   };
 
-  if (navigator.clipboard?.writeText) {
-    navigator.clipboard.writeText(text).then(markCopied).catch(() => {
-      fallbackCopy(text);
-      markCopied();
+  const markCopyFailed = () => {
+    const originalText = copyButton.textContent;
+    copyButton.textContent = "Copy failed";
+    window.setTimeout(() => {
+      copyButton.textContent = originalText;
+    }, 1600);
+  };
+
+  const trackSuccessfulCopy = () => {
+    const eventName = copyButton.dataset.copyEvent;
+    if (!eventName || typeof window.gtag !== "function") return;
+
+    window.gtag("event", eventName, {
+      citation_format: copyButton.dataset.citationFormat || "text",
+      citation_key: copyButton.dataset.citationKey || "unknown",
+      paper_doi: "10.1145/3772318.3791404",
     });
-  } else {
-    fallbackCopy(text);
+  };
+
+  const completeCopy = (didCopy) => {
+    if (!didCopy) {
+      markCopyFailed();
+      return;
+    }
+
     markCopied();
+    trackSuccessfulCopy();
+  };
+
+  if (navigator.clipboard?.writeText) {
+    navigator.clipboard.writeText(text)
+      .then(() => completeCopy(true))
+      .catch(() => completeCopy(fallbackCopy(text)));
+  } else {
+    completeCopy(fallbackCopy(text));
   }
 });
 
@@ -1700,6 +1727,11 @@ function fallbackCopy(text) {
   textArea.style.top = "-999px";
   document.body.appendChild(textArea);
   textArea.select();
-  document.execCommand("copy");
-  document.body.removeChild(textArea);
+  try {
+    return document.execCommand("copy");
+  } catch (_error) {
+    return false;
+  } finally {
+    document.body.removeChild(textArea);
+  }
 }

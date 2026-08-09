@@ -171,7 +171,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="static/css/index.css?v=research-recap-150">
     <script defer src="static/js/fontawesome.all.min.js"></script>
-    <script defer src="static/js/index.js?v=media-opt-46"></script>
+    <script defer src="static/js/index.js?v=citation-copy-47"></script>
   </head>
   <body class="classic-project-page">
     <main id="top">
@@ -1739,7 +1739,14 @@
             <h2>Citation</h2>
           </div>
           <div class="citation-box">
-            <button class="button copy-button" type="button" data-copy="#bibtex">
+            <button
+              class="button copy-button"
+              type="button"
+              data-copy="#bibtex"
+              data-copy-event="citation_copy"
+              data-citation-format="bibtex"
+              data-citation-key="choi2026state"
+            >
               Copy BibTeX
             </button>
             <pre><code id="bibtex">@inproceedings{choi2026state,
